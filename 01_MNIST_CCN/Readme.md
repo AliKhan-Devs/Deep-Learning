@@ -1,6 +1,6 @@
-# 🧠 Handwritten Digit Recognition using Convolutional Neural Networks (CNN)
+# Handwritten Digit Recognition using Convolutional Neural Networks (CNN)
 
-## 📌 Project Overview
+## Project Overview
 
 This project implements a **Convolutional Neural Network (CNN)** from scratch using **PyTorch** to classify handwritten digits from the **MNIST** dataset.
 
@@ -19,7 +19,7 @@ This project was completed as part of my deep learning learning journey before m
 
 ---
 
-# 📂 Project Structure
+# Project Structure
 
 ```
 Project_01_MNIST_CNN/
@@ -40,7 +40,7 @@ Project_01_MNIST_CNN/
 
 ---
 
-# 🏗 CNN Architecture
+# CNN Architecture
 
 The implemented CNN consists of one convolutional block followed by a fully connected classifier.
 
@@ -85,7 +85,7 @@ Fully Connected Layer
 
 ---
 
-# ⚙️ Training Configuration
+# Training Configuration
 
 | Parameter     | Value            |
 | ------------- | ---------------- |
@@ -99,7 +99,7 @@ Fully Connected Layer
 
 ---
 
-# 📊 Dataset
+# Dataset
 
 The project uses the **MNIST** handwritten digit dataset.
 
@@ -119,7 +119,7 @@ Each image is:
 
 ---
 
-# 🚀 Training Pipeline
+# Training Pipeline
 
 The CNN is trained using the standard deep learning workflow.
 
@@ -165,7 +165,7 @@ This process is repeated for every mini-batch across multiple epochs until the m
 
 ---
 
-# 📈 Results
+# Results
 
 Training completed successfully.
 
@@ -189,7 +189,7 @@ Final Test Accuracy:
 
 ---
 
-# 🔍 Prediction
+# Prediction
 
 After training, the model is saved and loaded for inference.
 
@@ -202,7 +202,7 @@ The prediction script:
 
 ---
 
-# 📚 Concepts Practiced
+# Concepts Practiced
 
 During this project, the following concepts were implemented and understood:
 
@@ -229,7 +229,7 @@ During this project, the following concepts were implemented and understood:
 
 ---
 
-# 🛠 Technologies Used
+# Technologies Used
 
 * Python
 * PyTorch
@@ -238,7 +238,7 @@ During this project, the following concepts were implemented and understood:
 
 ---
 
-# 🎯 Learning Outcome
+# Learning Outcome
 
 This project provided hands-on experience with building and training a Convolutional Neural Network from scratch using PyTorch.
 
@@ -248,7 +248,7 @@ This project serves as the foundation for more advanced computer vision models s
 
 ---
 
-## ⭐ Result Summary
+## Result Summary
 
 * Built a CNN from scratch using PyTorch.
 * Trained on 60,000 handwritten digit images.

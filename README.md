@@ -1,4 +1,4 @@
-# 🧠 Deep Learning Portfolio
+# Deep Learning Portfolio
 
 Welcome to my **Deep Learning Portfolio**.
 
@@ -8,7 +8,7 @@ The goal of this repository is not only to build working models, but also to und
 
 ---
 
-# 🎯 Objectives
+# Objectives
 
 * Learn Deep Learning systematically.
 * Build real-world Computer Vision projects.
@@ -18,7 +18,7 @@ The goal of this repository is not only to build working models, but also to und
 
 ---
 
-# 🛠️ Technologies
+# Technologies
 
 * Python
 * PyTorch
@@ -33,7 +33,7 @@ The goal of this repository is not only to build working models, but also to und
 
 ---
 
-# 📚 Learning Roadmap
+# Learning Roadmap
 
 ## Foundations
 
@@ -79,7 +79,7 @@ The goal of this repository is not only to build working models, but also to und
 
 ---
 
-# 🚀 Projects
+# Projects
 
 | #  | Project                               | Status      |
 | -- | ------------------------------------- | ----------- |
@@ -96,7 +96,7 @@ The goal of this repository is not only to build working models, but also to und
 
 ---
 
-# 📂 Repository Structure
+# Repository Structure
 
 ```
 Deep-Learning-Portfolio/
@@ -121,7 +121,7 @@ Each project contains:
 
 ---
 
-# 💡 Skills Demonstrated
+# Skills Demonstrated
 
 ## Deep Learning
 
@@ -167,7 +167,7 @@ Each project contains:
 
 ---
 
-# 📈 Progress
+# Progress
 
 ```
 PyTorch Basics               ██████████ 100%
@@ -185,7 +185,7 @@ Deployment                   ░░░░░░░░░░ 0%
 
 ---
 
-# 🎓 Learning Philosophy
+# Learning Philosophy
 
 Rather than simply using pre-trained models, I focus on understanding every stage of the Deep Learning pipeline:
 
@@ -203,7 +203,7 @@ Each project builds upon the previous one, creating a structured learning path f
 
 ---
 
-# 📌 Future Goals
+# Future Goals
 
 The long-term objective of this repository is to build increasingly advanced AI applications, including:
 
@@ -217,4 +217,4 @@ These projects will ultimately contribute toward building **GuardianGrid**, an A
 
 ---
 
-⭐ Thank you for visiting my repository! I hope these projects are helpful to others who are learning Deep Learning with PyTorch.
+Thank you for visiting my repository! I hope these projects are helpful to others who are learning Deep Learning with PyTorch.
