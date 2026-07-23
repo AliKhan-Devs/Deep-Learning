@@ -50,10 +50,10 @@ The goal of this repository is not only to build working models, but also to und
 ## Computer Vision
 
 * [x] Image Classification
+* [x] Batch Normalization
+* [x] Dropout
 * [ ] Transfer Learning
 * [ ] Data Augmentation
-* [ ] Batch Normalization
-* [ ] Dropout
 * [ ] Learning Rate Scheduling
 
 ---
@@ -85,7 +85,7 @@ The goal of this repository is not only to build working models, but also to und
 | -- | ------------------------------------- | ----------- |
 | 01 | MNIST Digit Classification (CNN)      | ✅ Completed |
 | 02 | Cats vs Dogs Classification (CNN)     | ✅ Completed |
-| 03 | CIFAR-10 Image Classification         | ⏳ Upcoming  |
+| 03 | CIFAR-10 Image Classification         | ✅ Completed  |
 | 04 | Transfer Learning with ResNet         | ⏳ Upcoming  |
 | 05 | Image Data Augmentation               | ⏳ Upcoming  |
 | 06 | Face Mask Detection                   | ⏳ Upcoming  |

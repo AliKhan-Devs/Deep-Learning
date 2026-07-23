@@ -1,4 +1,5 @@
 # Project 03 - CIFAR-10 Image Classification using CNN
+![CIFAR10 Modle testing](./testing_images/4.png)
 
 ## Overview
 
