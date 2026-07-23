@@ -1,4 +1,5 @@
 # Handwritten Digit Recognition using Convolutional Neural Networks (CNN)
+![Image of classification of hand written digits](./testing_images/1.png)
 
 ## Project Overview
 

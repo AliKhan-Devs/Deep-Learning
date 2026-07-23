@@ -1,5 +1,5 @@
 # Project 02 - Cats vs Dogs Image Classification using CNN
-
+![Image of classification of cat and dog](./testing_images/1.png)
 This project builds a Convolutional Neural Network (CNN) from scratch using PyTorch to classify images as either **Cat** or **Dog**.
 
 Unlike the MNIST project, this project works with **RGB images**, multiple convolutional layers, and includes a complete training and validation pipeline.
