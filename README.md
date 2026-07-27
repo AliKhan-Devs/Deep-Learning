@@ -176,7 +176,7 @@ CNN Fundamentals             ██████████ 100%
 
 Image Classification         ████████░░ 80%
 
-Transfer Learning            ░░░░░░░░░░ 0%
+Transfer Learning            ████████░░ 80%
 
 Object Detection             ░░░░░░░░░░ 0%
 
