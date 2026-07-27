@@ -52,7 +52,7 @@ The goal of this repository is not only to build working models, but also to und
 * [x] Image Classification
 * [x] Batch Normalization
 * [x] Dropout
-* [x]Transfer Learning
+* [x] Transfer Learning
 * [x] Data Augmentation
 * [ ] Learning Rate Scheduling
 
