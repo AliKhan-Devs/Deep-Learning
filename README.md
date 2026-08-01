@@ -80,10 +80,10 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 
 ## Object Detection (Upcoming)
 
-* [ ] Bounding Boxes
-* [ ] Intersection over Union (IoU)
-* [ ] Non-Maximum Suppression (NMS)
-* [ ] YOLOv8
+* [x] Bounding Boxes
+* [x] Intersection over Union (IoU)
+* [x] Non-Maximum Suppression (NMS)
+* [x] YOLOv8
 * [ ] Custom YOLO Training
 * [ ] Object Tracking
 
@@ -106,7 +106,7 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 | 02 | Cats vs Dogs Classification (Custom CNN)      | ✅ Completed |
 | 03 | CIFAR-10 Image Classification (Deep CNN)      | ✅ Completed |
 | 04 | Transfer Learning with ResNet18               | ✅ Completed |
-| 05 | Object Detection Foundations                  | ⏳ Upcoming  |
+| 05 | Object Detection Foundations                  | ✅ Completed |
 | 06 | YOLOv8 Object Detection                       | ⏳ Upcoming  |
 | 07 | Face Mask Detection (YOLO)                    | ⏳ Upcoming  |
 | 08 | Fire & Smoke Detection (YOLO)                 | ⏳ Upcoming  |
