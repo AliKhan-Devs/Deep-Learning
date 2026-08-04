@@ -107,7 +107,7 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 | 03 | CIFAR-10 Image Classification (Deep CNN)      | ✅ Completed |
 | 04 | Transfer Learning with ResNet18               | ✅ Completed |
 | 05 | Object Detection Foundations                  | ✅ Completed |
-| 06 | YOLOv8 Object Detection                       | ⏳ Upcoming  |
+| 06 | YOLOv8 Object Detection                       | ✅ Completed |
 | 07 | Face Mask Detection (YOLO)                    | ⏳ Upcoming  |
 | 08 | Fire & Smoke Detection (YOLO)                 | ⏳ Upcoming  |
 | 09 | Weapon Detection (YOLO)                       | ⏳ Upcoming  |
