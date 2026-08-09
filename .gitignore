@@ -1,6 +1,7 @@
 # any folder named dataset should not be tracked
 dataset/
-
+/data
+/runs
 
 
 # Byte-compiled / optimized / DLL files
