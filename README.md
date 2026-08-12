@@ -108,7 +108,7 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 | 04 | Transfer Learning with ResNet18               | ✅ Completed |
 | 05 | Object Detection Foundations                  | ✅ Completed |
 | 06 | YOLOv8 Object Detection                       | ✅ Completed |
-| 07 | Face Mask Detection (YOLO)                    | ⏳ Upcoming  |
+| 07 | Face Mask Detection (YOLO)                    | ✅ Completed |
 | 08 | Fire & Smoke Detection (YOLO)                 | ⏳ Upcoming  |
 | 09 | Weapon Detection (YOLO)                       | ⏳ Upcoming  |
 | 10 | GuardianGrid – AI Surveillance System         | ⏳ Upcoming  |
