@@ -1,0 +1,28 @@
+{
+  "model_name": "xception",
+  "display_name": "XceptionNet Forensic Classifier",
+  "architecture": "xception",
+  "num_classes": 2,
+  "classes": ["REAL", "FAKE"],
+  "positive_class": "FAKE",
+  "version": "1.0.0",
+  "input_size": [299, 299],
+  "mean": [0.5, 0.5, 0.5],
+  "std": [0.5, 0.5, 0.5],
+  "decision_threshold": 0.50,
+  "preprocessing": {
+    "face_crop_margin": 0.30,
+    "interpolation": "bilinear",
+    "color_space": "RGB"
+  },
+  "training_metadata": {
+    "dataset": "FaceForensics++ (c23)",
+    "optimizer": "AdamW",
+    "lr": 0.0002,
+    "weight_decay": 0.00001,
+    "scheduler": "CosineAnnealingLR",
+    "epochs": 15,
+    "batch_size": 32,
+    "trained_checkpoint": "best_model.pth"
+  }
+}

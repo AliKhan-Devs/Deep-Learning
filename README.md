@@ -89,9 +89,10 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 
 ---
 
-## AI Systems (Upcoming)
+## AI Systems
 
-* [ ] Face Mask Detection
+* [x] Face Mask Detection
+* [x] DeepGuard AI – Deepfake Image & Video Detection System
 * [ ] Fire & Smoke Detection
 * [ ] Weapon Detection
 * [ ] GuardianGrid AI Surveillance Platform
@@ -106,9 +107,9 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 | 02 | Cats vs Dogs Classification (Custom CNN)      | ✅ Completed |
 | 03 | CIFAR-10 Image Classification (Deep CNN)      | ✅ Completed |
 | 04 | Transfer Learning with ResNet18               | ✅ Completed |
-| 05 | Object Detection Foundations                  | ✅ Completed |
-| 06 | YOLOv8 Object Detection                       | ✅ Completed |
-| 07 | Face Mask Detection (YOLO)                    | ✅ Completed |
+| 05 | YOLOv8 Object Detection                       | ✅ Completed |
+| 06 | Face Mask Detection (YOLO)                    | ✅ Completed |
+| 07 | DeepGuard AI – Deepfake Detection System      | ✅ Completed |
 | 08 | Fire & Smoke Detection (YOLO)                 | ⏳ Upcoming  |
 | 09 | Weapon Detection (YOLO)                       | ⏳ Upcoming  |
 | 10 | GuardianGrid – AI Surveillance System         | ⏳ Upcoming  |

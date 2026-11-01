@@ -1,0 +1,16 @@
+# DeepGuard AI Backend Git Ignore
+__pycache__/
+*.py[cod]
+*.db
+*.sqlite3
+storage/uploads/*
+!storage/uploads/.gitkeep
+storage/reports/*
+!storage/reports/.gitkeep
+storage/thumbnails/*
+!storage/thumbnails/.gitkeep
+artifacts/models/*/*.pth
+artifacts/models/*/*.pt
+!artifacts/models/*/.gitkeep
+.pytest_cache/
+.coverage
