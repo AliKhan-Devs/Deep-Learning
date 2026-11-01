@@ -9,7 +9,10 @@ from sklearn.metrics import roc_auc_score, accuracy_score, f1_score
 
 from .early_stopping import EarlyStopping
 from .lr_scheduler import build_lr_scheduler
-from ..utils.export import export_model_checkpoint
+try:
+    from ..utils.export import export_model_checkpoint
+except (ImportError, ValueError):
+    from utils.export import export_model_checkpoint
 
 
 class DeepfakeTrainer:

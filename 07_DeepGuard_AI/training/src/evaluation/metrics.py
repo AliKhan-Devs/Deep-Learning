@@ -120,3 +120,7 @@ def benchmark_latency(
         "throughput_fps": round(fps, 1),
         "device": str(device),
     }
+
+
+calculate_metrics = compute_classification_metrics
+

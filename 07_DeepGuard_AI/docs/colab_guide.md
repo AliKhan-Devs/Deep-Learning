@@ -1,15 +1,68 @@
 # DeepGuard AI — Complete Google Colab Cloud Training Guide
 
-> [!NOTE]
-> This guide provides step-by-step instructions for executing model training on a cloud GPU using Google Colab and downloading the resulting checkpoints to your local machine.
+> [!TIP]
+> **Zero Manual Uploads Needed**: You do **NOT** need to manually upload the `training/` folder or download gigabytes of video to your PC. Everything can be cloned and downloaded directly in Google Colab in under 60 seconds!
 
 ---
 
-## 16-Step Step-by-Step Walkthrough
+## Which Training Path Should You Choose?
 
-### Step 1: Open Notebook in Google Colab
+| Training Path | Notebook to Open | Dataset Ingestion | Time to First Model | Best For |
+|---|---|---|---|---|
+| **Path A: Master Fast-Track (Recommended)** | `00_quickstart_colab_training.ipynb` | **Direct URL Download** (Hugging Face / Kaggle) | ~10–15 mins | Immediate training, zero setup, 1-click model export |
+| **Path B: Architecture-Specific Training** | `03_efficientnet_training.ipynb` or `04_xception_training.ipynb` | Direct URL or Drive Folder | ~15–30 mins | Focused training on EfficientNet-B0 or XceptionNet |
+| **Path C: Raw Video Forensic Pipeline** | `01_exploration` → `02_preprocessing` → `03/04` → `05_eval` | Raw MP4 Video Archives (FF++) | ~1–3 hours | Academic research, raw video frame extraction & benchmarking |
+
+---
+
+## Fast-Track Walkthrough: Master Quickstart (`00_quickstart_colab_training.ipynb`)
+
+### Step 1: Open Master Notebook in Google Colab
 1. Navigate to [Google Colab](https://colab.research.google.com/).
-2. Click **Upload** and upload `07_DeepGuard_AI/training/notebooks/03_efficientnet_training.ipynb` (or `04_xception_training.ipynb`).
+2. Select the **GitHub** tab.
+3. Paste repository URL: `https://github.com/AliKhan-Devs/Deep-Learning`
+4. Select `07_DeepGuard_AI/training/notebooks/00_quickstart_colab_training.ipynb`.
+*(Or click the **Open In Colab** badge at the top of the notebook).*
+
+### Step 2: Select a GPU Runtime
+1. In Colab, click **Runtime** in the top menu bar.
+2. Select **Change runtime type**.
+3. Under **Hardware accelerator**, select **T4 GPU** (free tier) or **A100 / V100** (Colab Pro).
+4. Click **Save**. Verify with `!nvidia-smi` in Step 1.
+
+### Step 3: Clone Repository in Colab (Zero Upload)
+Run the first code cell:
+```python
+!git clone https://github.com/AliKhan-Devs/Deep-Learning.git
+%cd Deep-Learning/07_DeepGuard_AI/training
+!pip install -r requirements.txt
+```
+Colab pulls the repository, source modules, and dependencies in ~5 seconds.
+
+### Step 4: Direct URL Automated Dataset Download
+Run Step 2. Select `HuggingFace_OpenRL_DeepFakeFace` from the dropdown:
+- It downloads real human faces (`wiki.zip`) and InsightFace deepfake swaps (`insight.zip`) directly from Hugging Face at 50–100 MB/s.
+- **Zero login required. Zero credentials required. Zero manual downloads to your PC.**
+- Automatically extracts images into `/content/data/` and builds an identity-grouped, leak-free train/val/test manifest (`manifest.csv`).
+
+### Step 5: Choose Architecture & Train
+- Choose architecture (`efficientnet_b0` or `xception`).
+- Run the training loop cell. Automatic Mixed Precision (`torch.amp`), AdamW, and Cosine Annealing will train the model and save the best checkpoint on validation loss.
+
+### Step 6: 1-Click Browser Download
+Run Step 7:
+`files.download('best_model.pth')` triggers your browser to download `best_model.pth` directly into your computer's `Downloads` folder!
+
+### Step 7: Place Checkpoint in Local DeepGuard Directory
+Move the downloaded file to:
+- For EfficientNet: `07_DeepGuard_AI/backend/artifacts/models/efficientnet_b0/best_model.pth`
+- For Xception: `07_DeepGuard_AI/backend/artifacts/models/xception/best_model.pth`
+
+Refresh your local web app at `http://localhost:3000`—the model is now fully active!
+
+---
+
+## Comprehensive 16-Step Walkthrough (For Raw FaceForensics++ Videos)
 
 ### Step 2: Select a GPU Runtime
 1. In Colab, click **Runtime** in the top menu bar.

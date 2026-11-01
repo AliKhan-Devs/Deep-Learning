@@ -260,11 +260,12 @@ Used strictly as an out-of-domain evaluation set to benchmark generalization on 
 ├── training/                            # Model training package & notebooks
 │   ├── requirements.txt                 # Cloud GPU dependencies
 │   ├── notebooks/                       # Google Colab notebooks
-│   │   ├── 01_dataset_exploration.ipynb
-│   │   ├── 02_video_preprocessing.ipynb
-│   │   ├── 03_efficientnet_training.ipynb
-│   │   ├── 04_xception_training.ipynb
-│   │   └── 05_model_evaluation.ipynb
+│   │   ├── 00_quickstart_colab_training.ipynb # Master 1-click training notebook (Zero local upload)
+│   │   ├── 01_dataset_exploration.ipynb # FF++ dataset exploration & leak-free split
+│   │   ├── 02_video_preprocessing.ipynb # Frame extraction & face cropping
+│   │   ├── 03_efficientnet_training.ipynb # EfficientNet-B0 fine-tuning
+│   │   ├── 04_xception_training.ipynb   # XceptionNet fine-tuning
+│   │   └── 05_model_evaluation.ipynb    # Evaluation & Celeb-DF test
 │   └── src/                             # Modular Python training package
 │       ├── datasets/                    # FF++ & Celeb-DF loaders
 │       ├── models/                      # EfficientNet & Xception builders
@@ -308,33 +309,37 @@ Used strictly as an out-of-domain evaluation set to benchmark generalization on 
 
 ## 12. Cloud Training Workflow (Google Colab)
 
-Because training deep convolutional networks on video datasets requires high VRAM, training is designed for **Google Colab GPUs**:
+Because training deep convolutional networks requires GPU acceleration, training is optimized for **Google Colab GPUs** with **Zero Manual Local Uploads**:
 
-1. Open `07_DeepGuard_AI/training/notebooks/03_efficientnet_training.ipynb` in Google Colab.
-2. Select **Runtime > Change runtime type > T4 GPU**.
-3. Mount Google Drive and set `DATASET_ROOT` to your FaceForensics++ directory.
-4. Execute cells sequentially:
-   - Sets deterministic seeds (42).
-   - Verifies 0 identity leakage between splits.
-   - Loads pretrained weights and configures AdamW ($\text{lr} = 10^{-4}$) with Cosine Annealing.
-   - Executes Automatic Mixed Precision (AMP) training.
-   - Saves `best_model.pth` and `model_config.json` upon validation ROC-AUC improvement.
+### Fast-Track: Master 1-Click Training Notebook (Recommended)
+1. In Google Colab, click **File > Open Notebook > GitHub** and enter:
+   `https://github.com/AliKhan-Devs/Deep-Learning`
+2. Select `07_DeepGuard_AI/training/notebooks/00_quickstart_colab_training.ipynb`.
+3. Select **Runtime > Change runtime type > T4 GPU**.
+4. Run **Step 1**: Automatically clones the repository into Colab in 5 seconds.
+5. Run **Step 2**: Select `HuggingFace_OpenRL_DeepFakeFace` to download real and fake face crops directly via URL (Zero login required, pulls at 80+ MB/s directly to Colab disk).
+6. Run **Step 3 to 5**: Trains either **EfficientNet-B0** or **XceptionNet** with Automatic Mixed Precision (`torch.amp`) and AdamW.
+7. Run **Step 7**: Automatically triggers your browser to download `best_model.pth` and `model_config.json`!
+
+### Full Forensic Research Pipeline
+For academic research with raw multi-gigabyte video archives (FaceForensics++), run the modular notebooks in sequence:
+`01_dataset_exploration.ipynb` → `02_video_preprocessing.ipynb` → `03_efficientnet_training.ipynb` / `04_xception_training.ipynb` → `05_model_evaluation.ipynb`.
 
 ---
 
 ## 13. Model Checkpoint Download Instructions
 
 After training terminates in Colab:
-1. Run the download cell:
+1. The final cell in Notebook `00` or `03/04` triggers the direct browser download:
    ```python
    from google.colab import files
-   files.download('/content/drive/MyDrive/DeepGuard_Models/efficientnet_b0/best_model.pth')
+   files.download('/content/exported_models/efficientnet_b0/best_model.pth')
    ```
-2. Place the downloaded `.pth` file into your local project directory:
+2. Move the downloaded `.pth` file into your local project directory:
    ```text
    07_DeepGuard_AI/backend/artifacts/models/efficientnet_b0/best_model.pth
    ```
-3. For XceptionNet, repeat using Notebook 04 and save into:
+3. For XceptionNet, repeat and save into:
    ```text
    07_DeepGuard_AI/backend/artifacts/models/xception/best_model.pth
    ```
