@@ -11,9 +11,9 @@ def test_face_detector_empty_image():
 
 
 def test_face_detector_blank_canvas():
-    """A plain black image should have 0 face detections."""
+    """A plain black image without fallback should have 0 face detections."""
     blank = np.zeros((300, 300, 3), dtype=np.uint8)
-    results = face_detector.detect(blank)
+    results = face_detector.detect(blank, allow_full_frame_fallback=False)
     assert len(results) == 0
 
 
