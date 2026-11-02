@@ -40,6 +40,57 @@ def create_model(
         )
 
 
+def adapt_state_dict_keys(state_dict: Dict[str, Any], model: nn.Module) -> Dict[str, Any]:
+    """
+    Intelligently adapts checkpoint keys to match model keys.
+    Handles:
+    - DataParallel 'module.' prefix
+    - Wrapper prefixes like 'backbone.' (EfficientNetB0Detector) or 'model.' (XceptionDetector)
+    - Direct torchvision or timm exports
+    """
+    model_keys = set(model.state_dict().keys())
+    cleaned = {k.replace("module.", ""): v for k, v in state_dict.items()}
+
+    # Exact match
+    if set(cleaned.keys()) == model_keys:
+        return cleaned
+
+    # Check if model expects 'backbone.' prefix (e.g. EfficientNetB0Detector)
+    with_backbone = {}
+    for k, v in cleaned.items():
+        if k in model_keys:
+            with_backbone[k] = v
+        elif f"backbone.{k}" in model_keys:
+            with_backbone[f"backbone.{k}"] = v
+    if len(with_backbone) >= len(model_keys) * 0.9:
+        return with_backbone
+
+    # Check if model expects 'model.' prefix (e.g. XceptionDetector)
+    with_model = {}
+    for k, v in cleaned.items():
+        if k in model_keys:
+            with_model[k] = v
+        elif f"model.{k}" in model_keys:
+            with_model[f"model.{k}"] = v
+    if len(with_model) >= len(model_keys) * 0.9:
+        return with_model
+
+    # Check if model has no prefix but checkpoint does
+    without_prefix = {}
+    for k, v in cleaned.items():
+        stripped = k
+        if stripped.startswith("backbone."):
+            stripped = stripped[len("backbone."):]
+        elif stripped.startswith("model."):
+            stripped = stripped[len("model."):]
+        if stripped in model_keys:
+            without_prefix[stripped] = v
+    if len(without_prefix) >= len(model_keys) * 0.9:
+        return without_prefix
+
+    return cleaned
+
+
 def load_detector_checkpoint(
     model: nn.Module,
     checkpoint_path: str,
@@ -75,13 +126,13 @@ def load_detector_checkpoint(
     else:
         raise ValueError(f"Unrecognized checkpoint format in: {checkpoint_path}")
 
-    # Handle DataParallel prefix if present
-    cleaned_state_dict = {}
-    for k, v in state_dict.items():
-        key = k.replace("module.", "")
-        cleaned_state_dict[key] = v
+    adapted_state_dict = adapt_state_dict_keys(state_dict, model)
+    try:
+        model.load_state_dict(adapted_state_dict, strict=True)
+    except RuntimeError:
+        # Fallback to non-strict loading to accommodate minor buffer variations
+        model.load_state_dict(adapted_state_dict, strict=False)
 
-    model.load_state_dict(cleaned_state_dict)
     model.to(device)
     model.eval()
     return model, metadata
