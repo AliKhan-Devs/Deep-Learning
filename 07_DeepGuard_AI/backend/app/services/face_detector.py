@@ -18,28 +18,39 @@ class BackendFaceDetector:
     def __init__(self, margin: float = settings.FACE_CROP_MARGIN, min_face_size: int = 50):
         self.margin = margin
         self.min_face_size = min_face_size
-        cascade_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-        self.cascade = cv2.CascadeClassifier(cascade_path)
-        if self.cascade.empty():
-            logger.error("Failed to load OpenCV face cascade.")
+        self.cascade = None
+
+        if hasattr(cv2, "CascadeClassifier") and hasattr(cv2, "data") and hasattr(cv2.data, "haarcascades"):
+            cascade_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+            try:
+                self.cascade = cv2.CascadeClassifier(cascade_path)
+                if self.cascade.empty():
+                    logger.warning("OpenCV Haar cascade is empty.")
+                    self.cascade = None
+            except Exception as e:
+                logger.warning(f"Failed to initialize CascadeClassifier: {e}")
+                self.cascade = None
+        else:
+            logger.warning("cv2.CascadeClassifier is not supported in the active OpenCV build.")
 
     def detect(self, image_np: np.ndarray) -> List[Dict[str, Any]]:
         """
         Detects faces in an RGB image.
         Returns list of bounding boxes and expanded bounding boxes.
         """
-        if image_np is None or image_np.size == 0:
+        if image_np is None or image_np.size == 0 or self.cascade is None:
             return []
 
         h_img, w_img = image_np.shape[:2]
         gray = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY)
 
+        flags = getattr(cv2, "CASCADE_SCALE_IMAGE", 0)
         faces = self.cascade.detectMultiScale(
             gray,
             scaleFactor=1.1,
             minNeighbors=5,
             minSize=(self.min_face_size, self.min_face_size),
-            flags=cv2.CASCADE_SCALE_IMAGE
+            flags=flags
         )
 
         results = []
