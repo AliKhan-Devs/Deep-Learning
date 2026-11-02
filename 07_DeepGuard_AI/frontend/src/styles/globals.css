@@ -3,32 +3,146 @@
 @tailwind utilities;
 
 :root {
-  --background: #090d16;
-  --foreground: #f8fafc;
+  --hud-bg: #030712;
+  --hud-card: #060e1a;
+  --hud-card-inner: #0a1626;
+  --hud-border: #0e2a47;
+  --hud-cyan: #00f0ff;
+  --hud-amber: #ff9900;
+  --hud-red: #ff3366;
+  --hud-green: #00ffaa;
+  --hud-text: #d6e6f5;
+  --hud-muted: #4e6b88;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--hud-text);
+  background: var(--hud-bg);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   min-height: 100vh;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.05) 0%, transparent 60%),
+    linear-gradient(rgba(14, 42, 71, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 42, 71, 0.15) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
 }
 
-/* Custom scrollbar for timelines */
+/* Custom Tactical HUD Panels */
+.hud-panel {
+  position: relative;
+  background: rgba(6, 14, 26, 0.85);
+  border: 1px solid rgba(14, 42, 71, 0.9);
+  border-radius: 6px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), inset 0 0 16px rgba(0, 240, 255, 0.02);
+}
+
+.hud-panel-active {
+  border-color: rgba(0, 240, 255, 0.35);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.12), inset 0 0 15px rgba(0, 240, 255, 0.04);
+}
+
+/* Corner Reticles for Panels */
+.reticle-container {
+  position: relative;
+}
+
+.reticle-tl, .reticle-tr, .reticle-bl, .reticle-br {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: #00f0ff;
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.reticle-tl {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid #00f0ff;
+  border-left: 2px solid #00f0ff;
+}
+
+.reticle-tr {
+  top: -1px;
+  right: -1px;
+  border-top: 2px solid #00f0ff;
+  border-right: 2px solid #00f0ff;
+}
+
+.reticle-bl {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 2px solid #00f0ff;
+  border-left: 2px solid #00f0ff;
+}
+
+.reticle-br {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid #00f0ff;
+  border-right: 2px solid #00f0ff;
+}
+
+/* HUD Glowing Effects */
+.glow-cyan {
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.7));
+}
+
+.glow-amber {
+  filter: drop-shadow(0 0 6px rgba(255, 153, 0, 0.7));
+}
+
+.glow-red {
+  filter: drop-shadow(0 0 6px rgba(255, 51, 102, 0.7));
+}
+
+.glow-green {
+  filter: drop-shadow(0 0 6px rgba(0, 255, 170, 0.7));
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+}
+
+.text-glow-amber {
+  text-shadow: 0 0 8px rgba(255, 153, 0, 0.6);
+}
+
+/* Scanline Overlay */
+.scanline-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanline-effect::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 240, 255, 0.04) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+/* Custom Scrollbar for HUD */
 ::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
+  height: 6px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #040811;
+  border: 1px solid #0e2a47;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  background: #153c63;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #00f0ff;
 }

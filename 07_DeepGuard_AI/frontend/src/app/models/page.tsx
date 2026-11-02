@@ -9,7 +9,8 @@ import {
   Download,
   Terminal,
   BookOpen,
-  FolderDown
+  FolderDown,
+  Radio
 } from "lucide-react";
 import { api } from "../../lib/api";
 import { ModelInfo } from "../../lib/types";
@@ -27,116 +28,113 @@ export default function ModelsPage() {
   }, []);
 
   const steps = [
-    { num: 1, title: "Open Colab Notebook", desc: "Open '03_efficientnet_training.ipynb' or '04_xception_training.ipynb' in Google Colab." },
-    { num: 2, title: "Select GPU Runtime", desc: "Navigate to Runtime > Change runtime type > Select GPU (T4, V100, or A100)." },
-    { num: 3, title: "Mount Google Drive", desc: "Run the drive mount cell to access your dataset storage and save checkpoints." },
-    { num: 4, title: "Obtain Dataset Access", desc: "Fill the official FaceForensics++ academic access agreement to download c23 H.264 sequences." },
-    { num: 5, title: "Prepare Dataset Root", desc: "Set DATASET_ROOT in Notebook 01 pointing to your original and manipulated sequences." },
-    { num: 6, title: "Generate Leak-Free Splits", desc: "Run identity-based grouping to isolate actor identities strictly between train, val, and test." },
-    { num: 7, title: "Sample Frames & Extract Faces", desc: "Run Notebook 02 to extract face crops with 25% boundary expansion." },
-    { num: 8, title: "Train EfficientNet-B0", desc: "Execute Notebook 03 with Automatic Mixed Precision (AMP), AdamW, and Cosine Annealing." },
-    { num: 9, title: "Train XceptionNet", desc: "Execute Notebook 04 using timm's genuine Xception at 299×299 resolution." },
-    { num: 10, title: "Evaluate on FF++ Test Set", desc: "Calculate Accuracy, Precision, Recall, F1, and ROC-AUC on unseen identities." },
-    { num: 11, title: "Cross-Dataset Evaluation", desc: "Run zero-shot evaluation on Celeb-DF v2 to measure out-of-domain generalization." },
-    { num: 12, title: "Inspect Confusion Matrix", desc: "Examine False Alarm Rate (FAR) and False Rejection Rate (FRR) curves." },
-    { num: 13, title: "Export Checkpoint", desc: "Save 'best_model.pth' and 'model_config.json' to Google Drive." },
-    { num: 14, title: "Download Checkpoint File", desc: "Download 'best_model.pth' directly to your local computer using files.download()." },
-    { num: 15, title: "Place in Local Directory", desc: "Save into '07_DeepGuard_AI/backend/artifacts/models/<model_name>/best_model.pth'." },
-    { num: 16, title: "Verify & Run Local Inference", desc: "Refresh DeepGuard AI dashboard; the model status badge switches immediately to 'Ready'!" }
+    { num: 1, title: "OPEN COLAB NOTEBOOK", desc: "Open '03_efficientnet_training.ipynb' or '04_xception_training.ipynb' in Google Colab." },
+    { num: 2, title: "SELECT GPU ACCELERATOR", desc: "Navigate to Runtime > Change runtime type > Select GPU (T4, V100, or A100)." },
+    { num: 3, title: "MOUNT GOOGLE DRIVE", desc: "Run the drive mount cell to access dataset storage and persist checkpoints." },
+    { num: 4, title: "OBTAIN DATASET ACCESS", desc: "Fill the official FaceForensics++ academic agreement to download c23 H.264 sequences." },
+    { num: 5, title: "SET DATASET ROOT", desc: "Configure DATASET_ROOT in Notebook 01 pointing to original and manipulated sequences." },
+    { num: 6, title: "GENERATE LEAK-FREE SPLITS", desc: "Run identity-based grouping to isolate actor identities strictly between train, val, and test." },
+    { num: 7, title: "EXTRACT FACIAL CROPS", desc: "Run Notebook 02 to extract face crops with 25% boundary expansion." },
+    { num: 8, title: "TRAIN EFFICIENTNET-B0", desc: "Execute Notebook 03 with Automatic Mixed Precision (AMP), AdamW, and Cosine Annealing." },
+    { num: 9, title: "TRAIN XCEPTIONNET", desc: "Execute Notebook 04 using timm's genuine Xception at 299×299 resolution." },
+    { num: 10, title: "EVALUATE ON FF++ TEST SET", desc: "Calculate Accuracy, Precision, Recall, F1, and ROC-AUC on unseen identities." },
+    { num: 11, title: "CROSS-DATASET EVALUATION", desc: "Run zero-shot evaluation on Celeb-DF v2 to measure out-of-domain generalization." },
+    { num: 12, title: "INSPECT CONFUSION MATRIX", desc: "Examine False Alarm Rate (FAR) and False Rejection Rate (FRR) curves." },
+    { num: 13, title: "EXPORT CHECKPOINT", desc: "Save 'best_model.pth' and 'model_config.json' to Google Drive." },
+    { num: 14, title: "DOWNLOAD CHECKPOINT FILE", desc: "Download 'best_model.pth' directly to your local computer using files.download()." },
+    { num: 15, title: "PLACE IN LOCAL ARTIFACTS", desc: "Save into '07_DeepGuard_AI/backend/artifacts/models/<model_name>/best_model.pth'." },
+    { num: 16, title: "VERIFY & RUN LOCAL INFERENCE", desc: "Refresh DeepGuard AI dashboard; the model status badge switches immediately to 'Ready'!" }
   ];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Neural Model Management & Colab Training
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-400 mt-1">
-          Inspect local checkpoint readiness and follow the step-by-step Google Colab training workflow.
-        </p>
+    <div className="w-full max-w-[1400px] mx-auto space-y-8 font-mono select-none">
+      {/* Top Header */}
+      <div className="flex items-center justify-between pb-2 border-b border-[#0d2a45]">
+        <div>
+          <div className="flex items-center gap-2">
+            <Radio className="w-4 h-4 text-hud-cyan animate-pulse" />
+            <h1 className="text-xl sm:text-2xl font-black tracking-widest text-white uppercase">
+              NEURAL ARCHITECTURE MATRIX
+            </h1>
+          </div>
+          <p className="text-xs tracking-wider text-slate-400 mt-0.5">
+            MODEL WEIGHT TELEMETRY & GOOGLE COLAB PIPELINE PROTOCOL
+          </p>
+        </div>
       </div>
 
-      {/* Model Cards */}
-      <div className="space-y-4">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-          <Cpu className="w-4 h-4 text-sky-400" /> Configured Architectures
-        </h3>
+      {/* Model Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {models.map((m) => (
+          <div
+            key={m.model_name}
+            className="hud-panel p-5 bg-[#050c18]/90 border border-[#0d2a45] space-y-4"
+          >
+            <div className="reticle-tl" />
+            <div className="reticle-tr" />
+            <div className="reticle-bl" />
+            <div className="reticle-br" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {models.map((m) => (
-            <div
-              key={m.model_name}
-              className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4 shadow-lg"
-            >
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-white text-base">{m.display_name}</h4>
-                {m.checkpoint_exists ? (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-950/70 border border-emerald-600/50 text-emerald-300">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Checkpoint Ready
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-950/70 border border-amber-600/50 text-amber-300">
-                    <AlertCircle className="w-3.5 h-3.5" /> Checkpoint Missing
-                  </span>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
-                  <span className="text-slate-500 uppercase text-[10px] block font-semibold">Architecture</span>
-                  <span className="font-mono text-slate-200">{m.architecture}</span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
-                  <span className="text-slate-500 uppercase text-[10px] block font-semibold">Input Size</span>
-                  <span className="font-mono text-slate-200">{m.input_size[0]}×{m.input_size[1]}</span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
-                  <span className="text-slate-500 uppercase text-[10px] block font-semibold">Classes</span>
-                  <span className="font-mono text-slate-200">{m.classes.join(", ")}</span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
-                  <span className="text-slate-500 uppercase text-[10px] block font-semibold">Threshold</span>
-                  <span className="font-mono text-slate-200">{m.decision_threshold}</span>
-                </div>
-              </div>
-
-              <div className="text-xs text-slate-400 font-mono bg-slate-950 p-3 rounded-xl border border-slate-800 break-all">
-                <span className="text-slate-500 block text-[10px] uppercase font-sans font-semibold mb-1">
-                  Expected Checkpoint Path
+            <div className="flex items-center justify-between pb-2 border-b border-[#0d2a45]">
+              <h4 className="font-bold text-sm text-white uppercase tracking-wider">{m.display_name}</h4>
+              {m.checkpoint_exists ? (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#061a12] border border-hud-green/40 text-hud-green glow-green">
+                  <CheckCircle2 className="w-3 h-3" /> CHECKPOINT READY
                 </span>
-                {m.checkpoint_path}
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#1a1206] border border-hud-amber/40 text-hud-amber glow-amber">
+                  <AlertCircle className="w-3 h-3" /> WEIGHTS REQUIRED
+                </span>
+              )}
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-slate-400">CORE ARCHITECTURE:</span>
+                <span className="text-hud-cyan font-bold">{m.architecture}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">INPUT TENSOR SIZE:</span>
+                <span className="text-white">{m.input_size[0]} × {m.input_size[1]} px</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">INFERENCE DEVICE:</span>
+                <span className="text-white uppercase">{m.device}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">WEIGHTS LOCATION:</span>
+                <span className="text-slate-300 truncate max-w-[240px] text-[11px]">{m.checkpoint_path}</span>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
-      {/* Step-by-Step Google Colab Workflow */}
-      <div className="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-6 shadow-xl">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-          <div>
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-sky-400" />
-              Complete Google Colab Training Workflow
-            </h3>
-            <p className="text-xs text-slate-400 mt-1">
-              Step-by-step instructions for executing training in the cloud and importing weights locally.
-            </p>
-          </div>
+      {/* 16-Step Google Colab Protocol */}
+      <div className="hud-panel p-6 bg-[#050c18]/90 border border-[#0d2a45] space-y-4">
+        <div className="reticle-tl" />
+        <div className="reticle-tr" />
+        <div className="reticle-bl" />
+        <div className="reticle-br" />
+
+        <div className="pb-3 border-b border-[#0d2a45]">
+          <h3 className="text-xs font-bold tracking-widest text-hud-cyan uppercase">
+            COLAB TRAINING WORKFLOW PROTOCOL (16-STEP GUIDE)
+          </h3>
+          <p className="text-[11px] text-slate-400 mt-0.5">
+            Zero GPU cost training pipeline using Google Colab Free Tier (T4 Tensor Core).
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
           {steps.map((s) => (
-            <div
-              key={s.num}
-              className="p-4 rounded-xl bg-slate-950/70 border border-slate-800/80 flex items-start gap-3.5"
-            >
-              <div className="w-7 h-7 rounded-lg bg-sky-950/80 border border-sky-800/60 text-sky-400 font-bold flex items-center justify-center text-xs shrink-0 mt-0.5">
-                {s.num}
+            <div key={s.num} className="p-3 rounded bg-[#071322] border border-[#0d2a45] flex items-start gap-3">
+              <div className="w-6 h-6 rounded bg-[#0b1d30] border border-hud-cyan/40 text-hud-cyan font-bold flex items-center justify-center shrink-0 text-[10px]">
+                {String(s.num).padStart(2, "0")}
               </div>
               <div>
-                <h5 className="font-bold text-xs text-slate-200 mb-1">{s.title}</h5>
-                <p className="text-xs text-slate-400 leading-relaxed">{s.desc}</p>
+                <h5 className="font-bold text-white text-[11px] tracking-wider uppercase">{s.title}</h5>
+                <p className="text-[10px] text-slate-400 mt-0.5 leading-relaxed">{s.desc}</p>
               </div>
             </div>
           ))}

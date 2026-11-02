@@ -44,7 +44,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full font-mono">
       <input
         ref={inputRef}
         type="file"
@@ -55,16 +55,16 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
       />
 
       {selectedFile ? (
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700 flex items-center justify-between">
+        <div className="p-3.5 rounded bg-[#071322] border border-hud-cyan/50 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-sky-950/60 text-sky-400 border border-sky-800/40">
-              {accept === "image" ? <FileImage className="w-6 h-6" /> : <FileVideo className="w-6 h-6" />}
+            <div className="p-2.5 rounded bg-[#0b1d30] text-hud-cyan border border-hud-cyan/40 glow-cyan">
+              {accept === "image" ? <FileImage className="w-5 h-5" /> : <FileVideo className="w-5 h-5" />}
             </div>
             <div>
-              <div className="font-semibold text-sm text-white truncate max-w-xs sm:max-w-md">
+              <div className="font-bold text-xs text-white truncate max-w-xs sm:max-w-md">
                 {selectedFile.name}
               </div>
-              <div className="text-xs text-slate-400">
+              <div className="text-[10px] text-hud-cyan/80 mt-0.5">
                 {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB &bull; {selectedFile.type || accept}
               </div>
             </div>
@@ -73,9 +73,9 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
             type="button"
             onClick={onClear}
             disabled={disabled}
-            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded text-slate-400 hover:text-hud-amber hover:bg-[#1a0f08] transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
       ) : (
@@ -86,27 +86,28 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
           }}
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
-          onClick={() => inputRef.current?.click()}
-          className={`border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-200 ${
-            isDragging
-              ? "border-sky-400 bg-sky-950/20"
-              : "border-slate-800 hover:border-slate-700 bg-slate-900/40"
+          onClick={() => !disabled && inputRef.current?.click()}
+          className={`border-2 border-dashed rounded p-6 sm:p-8 text-center cursor-pointer transition-all ${
+            disabled
+              ? "opacity-50 cursor-not-allowed border-[#0d2a45] bg-[#050c18]"
+              : isDragging
+              ? "border-hud-cyan bg-[#07192d] shadow-[0_0_15px_rgba(0,240,255,0.3)]"
+              : "border-[#0e2c49] bg-[#050c18] hover:border-hud-cyan/60 hover:bg-[#071322]"
           }`}
         >
-          <div className="mx-auto w-14 h-14 rounded-2xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center text-slate-300 mb-4 shadow-inner">
-            <UploadCloud className="w-7 h-7 text-sky-400" />
+          <div className="flex flex-col items-center gap-2">
+            <div className="p-3 rounded-full bg-[#081525] border border-[#103254] text-hud-cyan">
+              <UploadCloud className="w-6 h-6 animate-pulse" />
+            </div>
+            <div className="text-xs font-bold text-white tracking-wider uppercase mt-1">
+              CLICK OR DROP {accept === "image" ? "FACIAL IMAGE" : "VIDEO STREAM"} HERE
+            </div>
+            <div className="text-[10px] text-slate-400 tracking-wider">
+              {accept === "image"
+                ? "JPG, PNG, WEBP (MIN 128x128 PX)"
+                : "MP4, AVI, MOV (MAX 100MB)"}
+            </div>
           </div>
-          <h4 className="text-base font-bold text-white mb-1">
-            Drag & Drop {accept === "image" ? "Face Image" : "Video Recording"}
-          </h4>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto mb-4">
-            {accept === "image"
-              ? "Supports JPG, JPEG, PNG (Max 15 MB). Multiple faces in frame supported."
-              : "Supports MP4, MOV, AVI (Max 150 MB). Frames sampled at controlled intervals."}
-          </p>
-          <span className="inline-block px-4 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 hover:bg-slate-700 border border-slate-700 transition-colors">
-            Browse from Computer
-          </span>
         </div>
       )}
     </div>

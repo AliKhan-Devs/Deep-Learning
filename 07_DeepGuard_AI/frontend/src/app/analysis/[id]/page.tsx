@@ -7,17 +7,14 @@ import {
   FileText,
   Trash2,
   ArrowLeft,
-  Clock,
-  Cpu,
   Download,
-  AlertTriangle,
   RefreshCw,
-  Share2
+  Share2,
+  AlertTriangle
 } from "lucide-react";
 import { api } from "../../../lib/api";
 import { VideoAnalysisResponse } from "../../../lib/types";
-import { StatusBadge } from "../../../components/StatusBadge";
-import { VideoTimeline } from "../../../components/VideoTimeline";
+import { ForensicHUD } from "../../../components/ForensicHUD";
 import { DisclaimerAlert } from "../../../components/DisclaimerAlert";
 
 export default function AnalysisDetailPage() {
@@ -28,13 +25,17 @@ export default function AnalysisDetailPage() {
   const [data, setData] = useState<VideoAnalysisResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
       api
         .getAnalysisStatus(id)
         .then((res) => setData(res))
-        .catch((err) => console.error("Error loading analysis:", err))
+        .catch((err) => {
+          console.error("Error loading analysis:", err);
+          setError("Failed to fetch analysis record.");
+        })
         .finally(() => setLoading(false));
     }
   }, [id]);
@@ -53,110 +54,69 @@ export default function AnalysisDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <RefreshCw className="w-6 h-6 text-sky-400 animate-spin" />
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+        <RefreshCw className="w-8 h-8 text-hud-cyan animate-spin glow-cyan" />
+        <span className="text-xs font-mono tracking-widest text-hud-cyan uppercase">
+          INITIALIZING FORENSIC TELEMETRY...
+        </span>
       </div>
     );
   }
 
-  if (!data) {
+  if (error || !data) {
     return (
-      <div className="text-center py-20 space-y-4">
-        <h2 className="text-xl font-bold text-white">Analysis Record Not Found</h2>
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sky-400 hover:underline">
-          <ArrowLeft className="w-4 h-4" /> Return to Dashboard
-        </Link>
+      <div className="max-w-2xl mx-auto text-center py-24 space-y-4">
+        <div className="inline-flex p-3 rounded-full bg-red-950/40 border border-red-500/40 text-red-400">
+          <AlertTriangle className="w-6 h-6" />
+        </div>
+        <h2 className="text-xl font-mono font-bold text-white uppercase tracking-wider">
+          Analysis Record Not Found
+        </h2>
+        <p className="text-xs font-mono text-slate-400">
+          Record ID: {id} may have expired or been deleted from storage.
+        </p>
+        <div className="pt-2">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded text-xs font-mono font-bold bg-[#0a1b2d] hover:bg-[#122c47] text-hud-cyan border border-hud-cyan/40 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" /> RETURN TO DASHBOARD
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      {/* Top Navigation */}
-      <div className="flex items-center justify-between">
+    <div className="w-full space-y-6">
+      {/* Top Utility Bar */}
+      <div className="flex items-center justify-between pb-2 border-b border-[#0d2a45]">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-mono font-bold text-slate-400 hover:text-hud-cyan transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Dashboard
+          <ArrowLeft className="w-4 h-4" /> &lt; DASHBOARD
         </Link>
 
-        <div className="flex items-center gap-2">
-          <a
-            href={api.getReportUrl(id, "json")}
-            download
-            className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-colors"
-          >
-            <Download className="w-3.5 h-3.5" /> JSON Export
-          </a>
-          <a
-            href={api.getReportUrl(id, "html")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-sky-500 hover:bg-sky-400 text-slate-950 flex items-center gap-1.5 shadow-sm transition-colors"
-          >
-            <FileText className="w-3.5 h-3.5" /> HTML Certificate
-          </a>
+        <div className="flex items-center gap-3">
           <button
             onClick={handleDelete}
             disabled={deleting}
-            className="p-2 rounded-xl text-slate-500 hover:text-rose-400 hover:bg-slate-800 transition-colors"
-            title="Delete Record"
+            className="px-3 py-1.5 rounded text-xs font-mono bg-[#180a0d] hover:bg-red-950 text-red-400 border border-red-900/60 flex items-center gap-1.5 transition-colors"
+            title="Purge Record"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="w-3.5 h-3.5" /> PURGE RECORD
           </button>
         </div>
       </div>
 
-      {/* Main Analysis Card */}
-      <div className="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-xl space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs uppercase font-mono text-slate-400">ID: {data.analysis_id}</span>
-              <StatusBadge status={data.prediction || data.status} size="sm" />
-            </div>
-            <h1 className="text-2xl font-black text-white">{data.original_filename}</h1>
-          </div>
-          <div className="text-right">
-            <div className="text-xs text-slate-400 uppercase font-semibold">Manipulation Score</div>
-            <div className="text-3xl font-black text-rose-400">
-              {data.fake_probability !== undefined && data.fake_probability !== null
-                ? `${(data.fake_probability * 100).toFixed(1)}%`
-                : "—"}
-            </div>
-          </div>
-        </div>
+      {/* Main Military/Cyber Forensic HUD Dashboard */}
+      <ForensicHUD videoData={data} analysisId={id} />
 
-        {/* Metadata Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-[11px] font-semibold text-slate-400 uppercase">Media Type</div>
-            <div className="text-sm font-bold text-white uppercase mt-0.5">{data.media_type}</div>
-          </div>
-          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-[11px] font-semibold text-slate-400 uppercase">Architecture</div>
-            <div className="text-sm font-bold text-sky-400 mt-0.5">{data.model_name}</div>
-          </div>
-          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-[11px] font-semibold text-slate-400 uppercase">Duration</div>
-            <div className="text-sm font-bold text-white mt-0.5">{data.execution_duration_sec}s</div>
-          </div>
-          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-[11px] font-semibold text-slate-400 uppercase">Timestamp</div>
-            <div className="text-xs font-mono text-slate-300 mt-1 truncate">{data.created_at}</div>
-          </div>
-        </div>
-
-        {/* Video Timeline View if Video */}
-        {data.media_type === "video" && data.timeline.length > 0 && (
-          <div className="pt-4 border-t border-slate-800">
-            <VideoTimeline timeline={data.timeline} />
-          </div>
-        )}
+      {/* Legal & Scientific Disclaimer */}
+      <div className="pt-4">
+        <DisclaimerAlert />
       </div>
-
-      <DisclaimerAlert />
     </div>
   );
 }

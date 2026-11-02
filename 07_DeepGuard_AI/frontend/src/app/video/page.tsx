@@ -10,15 +10,17 @@ import {
   RefreshCw,
   Clock,
   Layers,
-  AlertTriangle
+  AlertTriangle,
+  Radio,
+  Play
 } from "lucide-react";
 import { api, ApiError } from "../../lib/api";
 import { VideoAnalysisResponse, ModelInfo } from "../../lib/types";
 import { UploadZone } from "../../components/UploadZone";
 import { ModelSelector } from "../../components/ModelSelector";
-import { VideoTimeline } from "../../components/VideoTimeline";
 import { StatusBadge } from "../../components/StatusBadge";
 import { ProgressBar } from "../../components/ProgressBar";
+import { ForensicHUD } from "../../components/ForensicHUD";
 import { DisclaimerAlert } from "../../components/DisclaimerAlert";
 
 export default function VideoAnalysisPage() {
@@ -30,6 +32,7 @@ export default function VideoAnalysisPage() {
   const [analysisId, setAnalysisId] = useState<string | null>(null);
   const [analysisState, setAnalysisState] = useState<VideoAnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [demoMode, setDemoMode] = useState(false);
 
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -110,161 +113,150 @@ export default function VideoAnalysisPage() {
     analysisState?.status === "PENDING" || analysisState?.status === "PROCESSING";
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Video Forensic Analysis
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-400 mt-1">
-          Controlled frame extraction, multi-face tracking, and temporal score aggregation across video sequences.
-        </p>
-      </div>
-
-      {/* Model Selector */}
-      <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-md">
-        <ModelSelector
-          models={models}
-          selectedModel={selectedModel}
-          onSelect={setSelectedModel}
-          disabled={submitting || isProcessing}
-        />
-      </div>
-
-      {/* Upload Box */}
-      <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-md space-y-4">
-        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-          Source Video Recording
-        </label>
-        <UploadZone
-          accept="video"
-          onFileSelect={handleFileSelect}
-          selectedFile={file}
-          onClear={handleClear}
-          disabled={submitting || isProcessing}
-        />
-
-        {file && !analysisId && (
-          <div className="flex justify-end pt-2">
-            <button
-              onClick={handleStartAnalysis}
-              disabled={submitting}
-              className="px-6 py-2.5 rounded-xl text-sm font-bold bg-sky-500 hover:bg-sky-400 text-slate-950 flex items-center gap-2 shadow-lg shadow-sky-500/25 transition-all disabled:opacity-50"
-            >
-              {submitting ? (
-                <>
-                  <RefreshCw className="w-4 h-4 animate-spin" /> Enqueuing Video...
-                </>
-              ) : (
-                "Initiate Video Forensic Scan"
-              )}
-            </button>
+    <div className="w-full max-w-[1400px] mx-auto space-y-6">
+      {/* Top Banner and Mode Switcher */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#0d2a45]">
+        <div>
+          <div className="flex items-center gap-2">
+            <Radio className="w-4 h-4 text-hud-cyan animate-pulse" />
+            <h1 className="text-xl sm:text-2xl font-mono font-black tracking-widest text-white uppercase">
+              VIDEO FORENSIC ENGINE
+            </h1>
           </div>
-        )}
+          <p className="text-xs font-mono tracking-wider text-slate-400 mt-0.5">
+            TEMPORAL CONSISTENCY VERIFICATION & BIOMETRIC MESH AUTHENTICATION
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setDemoMode(!demoMode)}
+            className={`px-3 py-1.5 rounded text-xs font-mono font-bold border transition-all ${
+              demoMode
+                ? "bg-hud-cyan text-slate-950 border-hud-cyan shadow-[0_0_12px_rgba(0,240,255,0.4)]"
+                : "bg-[#081525] text-hud-cyan border-[#0f3456] hover:bg-[#0f243c]"
+            }`}
+          >
+            {demoMode ? "EXIT HUD DEMO" : "HUD SIMULATOR MODE"}
+          </button>
+        </div>
+      </div>
+
+      {/* Model Selector & Upload Controls */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Model Architecture Selector */}
+        <div className="lg:col-span-5 hud-panel p-4 bg-[#050c18]/90 border border-[#0d2a45]">
+          <div className="reticle-tl" />
+          <div className="reticle-tr" />
+          <div className="reticle-bl" />
+          <div className="reticle-br" />
+
+          <div className="pb-2 mb-3 border-b border-[#0d2a45]">
+            <h3 className="text-xs font-mono font-bold tracking-widest text-hud-cyan uppercase">
+              NEURAL ARCHITECTURE SELECTOR
+            </h3>
+          </div>
+
+          <ModelSelector
+            models={models}
+            selectedModel={selectedModel}
+            onSelect={setSelectedModel}
+            disabled={submitting || isProcessing}
+          />
+        </div>
+
+        {/* Video Upload Dropzone */}
+        <div className="lg:col-span-7 hud-panel p-4 bg-[#050c18]/90 border border-[#0d2a45]">
+          <div className="reticle-tl" />
+          <div className="reticle-tr" />
+          <div className="reticle-bl" />
+          <div className="reticle-br" />
+
+          <div className="pb-2 mb-3 border-b border-[#0d2a45] flex items-center justify-between">
+            <h3 className="text-xs font-mono font-bold tracking-widest text-hud-cyan uppercase">
+              VIDEO SOURCE INGESTION
+            </h3>
+            <span className="text-[10px] font-mono text-slate-400">MP4, AVI, MOV</span>
+          </div>
+
+          <UploadZone
+            accept="video"
+            onFileSelect={handleFileSelect}
+            selectedFile={file}
+            onClear={handleClear}
+            disabled={submitting || isProcessing}
+          />
+
+          {file && !analysisId && (
+            <div className="flex justify-end pt-3">
+              <button
+                onClick={handleStartAnalysis}
+                disabled={submitting}
+                className="px-5 py-2 rounded text-xs font-mono font-black tracking-widest bg-hud-cyan hover:bg-cyan-300 text-slate-950 flex items-center gap-2 shadow-[0_0_15px_rgba(0,240,255,0.4)] transition-all disabled:opacity-50 uppercase"
+              >
+                {submitting ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" /> ENQUEUING STREAM...
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5 fill-current" /> EXECUTE FORENSIC ANALYSIS
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Error Notice */}
       {error && (
-        <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-950/30 text-rose-300 text-sm flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+        <div className="p-4 rounded border border-hud-red/40 bg-hud-red/10 text-hud-red text-xs font-mono flex items-start gap-3 glow-red">
+          <AlertCircle className="w-4 h-4 text-hud-red shrink-0 mt-0.5" />
           <div className="flex-1">
-            <span className="font-bold">Error: </span>
+            <span className="font-bold">FORENSIC PIPELINE ERROR: </span>
             {error}
           </div>
         </div>
       )}
 
-      {/* Processing Progress Status */}
+      {/* Processing Telemetry Banner */}
       {isProcessing && (
-        <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg space-y-4">
+        <div className="hud-panel p-5 bg-[#050c18]/90 border border-hud-cyan/50 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <RefreshCw className="w-5 h-5 text-sky-400 animate-spin" />
+              <RefreshCw className="w-5 h-5 text-hud-cyan animate-spin glow-cyan" />
               <div>
-                <h4 className="font-bold text-white text-sm">
+                <h4 className="font-mono font-bold text-white text-xs tracking-wider uppercase">
                   {analysisState?.status === "PENDING"
-                    ? "Queued in Forensic Queue..."
-                    : "Extracting Frames & Analyzing Faces..."}
+                    ? "STREAM ENQUEUED IN FORENSIC BUFFER..."
+                    : "EXTRACTING FRAMES & COMPILATION OF BIOMETRIC TELEMETRY..."}
                 </h4>
-                <p className="text-xs text-slate-400">
-                  Sampling one frame every 0.75 seconds up to safety ceiling.
+                <p className="text-[11px] font-mono text-slate-400 mt-0.5">
+                  Controlled face sampling at 0.75s intervals with tensor anomaly tracking.
                 </p>
               </div>
             </div>
-            <StatusBadge status={analysisState?.status} size="sm" />
+            <span className="px-2.5 py-1 rounded bg-hud-cyan/15 text-hud-cyan border border-hud-cyan/40 text-[10px] font-mono font-bold uppercase animate-pulse">
+              PROCESSING
+            </span>
           </div>
 
           <ProgressBar
-            progress={analysisState?.progress_pct || 10}
-            label="Forensic Inference Progress"
+            progress={analysisState?.progress_pct || 15}
+            label="TEMPORAL SEQUENCE ANALYSIS"
           />
         </div>
       )}
 
-      {/* Analysis Results View */}
-      {analysisState?.status === "COMPLETED" && (
-        <div className="space-y-6">
-          <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
-              <div>
-                <span className="text-xs uppercase font-semibold text-slate-400">
-                  Video-Level Forensic Verdict
-                </span>
-                <div className="flex items-center gap-3 mt-1">
-                  <h2 className="text-2xl font-black text-white">{analysisState.prediction}</h2>
-                  <StatusBadge status={analysisState.prediction} size="md" />
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <a
-                  href={api.getReportUrl(analysisState.analysis_id, "html")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 flex items-center gap-1.5 transition-colors"
-                >
-                  <FileText className="w-4 h-4" /> Download Certificate
-                </a>
-              </div>
-            </div>
-
-            {/* Score Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[11px] font-semibold text-slate-400 uppercase">
-                  Aggregated Fake Prob
-                </div>
-                <div className="text-2xl font-black text-rose-400 mt-1">
-                  {((analysisState.fake_probability || 0) * 100).toFixed(1)}%
-                </div>
-              </div>
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[11px] font-semibold text-slate-400 uppercase">
-                  Sampled Frames
-                </div>
-                <div className="text-2xl font-black text-white mt-1">
-                  {analysisState.frames_analyzed}
-                </div>
-              </div>
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[11px] font-semibold text-slate-400 uppercase">
-                  Faces Detected
-                </div>
-                <div className="text-2xl font-black text-white mt-1">
-                  {analysisState.frames_with_faces}
-                </div>
-              </div>
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[11px] font-semibold text-slate-400 uppercase">
-                  Suspicious Bursts
-                </div>
-                <div className="text-2xl font-black text-amber-400 mt-1">
-                  {analysisState.suspicious_frames_count}
-                </div>
-              </div>
-            </div>
-
-            {/* Video Frame Timeline */}
-            <VideoTimeline timeline={analysisState.timeline} />
-          </div>
+      {/* Main HUD: Active either when analysis is completed or in demo mode */}
+      {(analysisState?.status === "COMPLETED" || demoMode) && (
+        <div className="pt-2">
+          <ForensicHUD
+            videoData={analysisState}
+            analysisId={analysisId || (demoMode ? "DF-DEMO-2026" : undefined)}
+            isDemo={demoMode}
+          />
         </div>
       )}
 

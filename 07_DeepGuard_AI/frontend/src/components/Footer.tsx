@@ -1,29 +1,29 @@
 import React from "react";
 import Link from "next/link";
-import { Shield, Github, BookOpen } from "lucide-react";
+import { Shield, Github, BookOpen, Terminal } from "lucide-react";
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="border-t border-slate-800/80 bg-slate-950 mt-20 py-10 text-xs text-slate-500">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="border-t border-[#0d2a45] bg-[#040811] mt-20 py-8 text-xs font-mono text-slate-400">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Shield className="w-5 h-5 text-sky-400" />
-          <span>
-            DeepGuard AI &bull; Deep Learning & Computer Vision Portfolio &bull; Open-Source
+          <Terminal className="w-4 h-4 text-hud-cyan" />
+          <span className="tracking-wider uppercase">
+            DEEPGUARD AI &bull; DEEP LEARNING & COMPUTER VISION FORENSICS &bull; PORTFOLIO SPEC
           </span>
         </div>
 
-        <div className="flex items-center gap-6 text-slate-400">
-          <Link href="/models" className="hover:text-white transition-colors flex items-center gap-1.5">
-            <BookOpen className="w-4 h-4" /> Colab Training Guide
+        <div className="flex items-center gap-6">
+          <Link href="/models" className="hover:text-hud-cyan transition-colors flex items-center gap-1.5 uppercase">
+            <BookOpen className="w-3.5 h-3.5 text-hud-cyan" /> COLAB TRAINING MATRIX
           </Link>
           <a
             href="https://github.com/AliKhan-Devs/Deep-Learning"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white transition-colors flex items-center gap-1.5"
+            className="hover:text-hud-cyan transition-colors flex items-center gap-1.5 uppercase"
           >
-            <Github className="w-4 h-4" /> GitHub Repository
+            <Github className="w-3.5 h-3.5 text-hud-cyan" /> GITHUB REMOTE
           </a>
         </div>
       </div>
