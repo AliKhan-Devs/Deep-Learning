@@ -1,0 +1,6 @@
+app/storage/*.db
+app/storage/avatars/*.jpg
+app/storage/snapshots/*.jpg
+__pycache__/
+*.pyc
+.pytest_cache/
