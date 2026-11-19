@@ -249,13 +249,14 @@ export default function VideoAnalysisPage() {
         </div>
       )}
 
-      {/* Main HUD: Active either when analysis is completed or in demo mode */}
-      {(analysisState?.status === "COMPLETED" || demoMode) && (
+      {/* Main HUD: Active either when analysis is completed or in demo mode or when video preview is loaded */}
+      {(analysisState?.status === "COMPLETED" || demoMode || file) && (
         <div className="pt-2">
           <ForensicHUD
             videoData={analysisState}
             analysisId={analysisId || (demoMode ? "DF-DEMO-2026" : undefined)}
-            isDemo={demoMode}
+            imageUrl={previewUrl}
+            isDemo={demoMode || !analysisState}
           />
         </div>
       )}

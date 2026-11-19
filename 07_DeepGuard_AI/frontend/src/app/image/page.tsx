@@ -10,13 +10,13 @@ import {
   RefreshCw,
   ExternalLink,
   Radio,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Download
 } from "lucide-react";
 import { api, ApiError } from "../../lib/api";
 import { ImageAnalysisResponse, ModelInfo } from "../../lib/types";
 import { UploadZone } from "../../components/UploadZone";
 import { ModelSelector } from "../../components/ModelSelector";
-import { FaceBBoxViewer } from "../../components/FaceBBoxViewer";
 import { ForensicHUD } from "../../components/ForensicHUD";
 import { DisclaimerAlert } from "../../components/DisclaimerAlert";
 
@@ -86,7 +86,7 @@ export default function ImageAnalysisPage() {
             </h1>
           </div>
           <p className="text-xs font-mono tracking-wider text-slate-400 mt-0.5">
-            MULTI-FACE SYNTHESIS EXTRACTION & MICRO-TEXTURE ARTIFACT DETECTION
+            MULTI-STAGE FACE LOCALIZATION & FINE-GRAINED SYNTHESIS DETECTION
           </p>
         </div>
       </div>
@@ -167,47 +167,58 @@ export default function ImageAnalysisPage() {
         </div>
       )}
 
-      {/* When Results Arrive: Display Full Forensic HUD */}
-      {result && previewUrl && (
-        <div className="space-y-6">
-          <ForensicHUD imageData={result} analysisId={result.analysis_id} />
+      {/* Primary Forensic HUD: Displays the image directly inside Panel 1 with accurate bounding boxes */}
+      {(result || previewUrl) && (
+        <div className="space-y-6 pt-2">
+          <ForensicHUD
+            imageData={result}
+            analysisId={result?.analysis_id}
+            imageUrl={previewUrl}
+            faces={result?.faces || []}
+            isDemo={!result}
+          />
 
-          {/* Additional Inspection: Bounding Box Overlay & Per-Face Table */}
-          <div className="hud-panel p-5 bg-[#050c18]/90 border border-[#0d2a45] space-y-4">
-            <div className="reticle-tl" />
-            <div className="reticle-tr" />
-            <div className="reticle-bl" />
-            <div className="reticle-br" />
+          {/* Per-Face Prediction Telemetry Table (Clean tabular data only, no duplicate image below) */}
+          {result && result.faces && result.faces.length > 0 && (
+            <div className="hud-panel p-5 bg-[#050c18]/90 border border-[#0d2a45] space-y-4 font-mono">
+              <div className="reticle-tl" />
+              <div className="reticle-tr" />
+              <div className="reticle-bl" />
+              <div className="reticle-br" />
 
-            <div className="pb-2 border-b border-[#0d2a45] flex items-center justify-between">
-              <h3 className="text-xs font-mono font-bold tracking-widest text-hud-cyan uppercase">
-                SPATIAL MANIPULATION BOUNDARIES ({result.faces_detected_count} FACES LOCATED)
-              </h3>
-              <a
-                href={api.getReportUrl(result.analysis_id, "html")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1 rounded text-[11px] font-mono bg-hud-cyan/20 hover:bg-hud-cyan/30 text-hud-cyan border border-hud-cyan/40 flex items-center gap-1.5 transition-colors"
-              >
-                <FileText className="w-3 h-3" /> OFFICIAL CERTIFICATE
-              </a>
-            </div>
+              <div className="pb-2 border-b border-[#0d2a45] flex items-center justify-between">
+                <h3 className="text-xs font-bold tracking-widest text-hud-cyan uppercase">
+                  DETECTED BIOMETRIC TARGETS ({result.faces_detected_count} FACES LOCATED)
+                </h3>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={api.getReportUrl(result.analysis_id, "json")}
+                    download
+                    className="px-2.5 py-1 rounded text-[11px] bg-[#091729] hover:bg-[#122842] text-hud-cyan border border-[#133454] flex items-center gap-1.5 transition-colors"
+                  >
+                    <Download className="w-3 h-3" /> JSON
+                  </a>
+                  <a
+                    href={api.getReportUrl(result.analysis_id, "html")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1 rounded text-[11px] bg-hud-cyan/20 hover:bg-hud-cyan/30 text-hud-cyan border border-hud-cyan/40 flex items-center gap-1.5 transition-colors"
+                  >
+                    <FileText className="w-3 h-3" /> OFFICIAL CERTIFICATE
+                  </a>
+                </div>
+              </div>
 
-            <div className="py-2">
-              <FaceBBoxViewer imageSrc={previewUrl} faces={result.faces} />
-            </div>
-
-            {/* Per-Face Prediction Table */}
-            {result.faces.length > 0 && (
               <div className="rounded border border-[#0d2a45] overflow-hidden">
-                <table className="w-full text-left text-xs font-mono">
+                <table className="w-full text-left text-xs">
                   <thead className="bg-[#091729] text-hud-cyan uppercase border-b border-[#0d2a45]">
                     <tr>
-                      <th className="px-4 py-2.5">Face Target</th>
-                      <th className="px-4 py-2.5">Verdict</th>
-                      <th className="px-4 py-2.5">Confidence</th>
-                      <th className="px-4 py-2.5">P(Synthetic)</th>
-                      <th className="px-4 py-2.5">P(Authentic)</th>
+                      <th className="px-4 py-2.5">TARGET</th>
+                      <th className="px-4 py-2.5">VERDICT</th>
+                      <th className="px-4 py-2.5">CONFIDENCE</th>
+                      <th className="px-4 py-2.5">P(SYNTHETIC)</th>
+                      <th className="px-4 py-2.5">P(AUTHENTIC)</th>
+                      <th className="px-4 py-2.5">SPATIAL BOX (X, Y, W, H)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#0d2a45] bg-[#050c18]">
@@ -230,13 +241,16 @@ export default function ImageAnalysisPage() {
                         <td className="px-4 py-2.5 text-hud-green font-bold">
                           {(f.real_probability * 100).toFixed(1)}%
                         </td>
+                        <td className="px-4 py-2.5 text-slate-400 text-[11px]">
+                          [{f.bbox.x}, {f.bbox.y}, {f.bbox.w}, {f.bbox.h}]
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 

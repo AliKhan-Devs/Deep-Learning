@@ -10,7 +10,7 @@ import { MicroExpressionCard } from "./MicroExpressionCard";
 import { TemporalConsistencyChart } from "./TemporalConsistencyChart";
 import { FrameAnomalyFilmstrip } from "./FrameAnomalyFilmstrip";
 import { DetectionSummaryAndRecommendation } from "./DetectionSummaryAndRecommendation";
-import { VideoAnalysisResponse, ImageAnalysisResponse } from "../lib/types";
+import { VideoAnalysisResponse, ImageAnalysisResponse, FacePrediction } from "../lib/types";
 import { api } from "../lib/api";
 
 interface ForensicHUDProps {
@@ -18,6 +18,8 @@ interface ForensicHUDProps {
   imageData?: ImageAnalysisResponse | null;
   analysisId?: string;
   isDemo?: boolean;
+  imageUrl?: string | null;
+  faces?: FacePrediction[];
 }
 
 export const ForensicHUD: React.FC<ForensicHUDProps> = ({
@@ -25,6 +27,8 @@ export const ForensicHUD: React.FC<ForensicHUDProps> = ({
   imageData,
   analysisId,
   isDemo = false,
+  imageUrl,
+  faces,
 }) => {
   // Determine if manipulated based on data or demo defaults
   const isManipulated =
@@ -58,11 +62,13 @@ export const ForensicHUD: React.FC<ForensicHUDProps> = ({
   // Compute timestamp for the selected frame
   const currentTimestamp = (currentFrame / (totalFrames || 300)) * (durationSec * 2.5);
 
-  // Check if current frame has a real thumbnail from video timeline
+  // Determine media source feed: Prioritize explicit imageUrl (uploaded image/frame) or active video timeline thumbnail
   const activeFrameDetail = videoData?.timeline?.find(
     (f) => f.frame_index === currentFrame
   );
-  const rawImageUrl = activeFrameDetail?.thumbnail_url || null;
+  const rawImageUrl = imageUrl || activeFrameDetail?.thumbnail_url || null;
+  const detectedFaces = faces || imageData?.faces || [];
+  const isVideo = !!videoData;
 
   return (
     <div className="w-full max-w-[1400px] mx-auto space-y-4 font-sans select-none">
@@ -83,7 +89,7 @@ export const ForensicHUD: React.FC<ForensicHUDProps> = ({
               </h1>
             </div>
             <p className="text-xs font-mono tracking-widest text-hud-cyan uppercase mt-1 pl-5">
-              AI-POWERED VIDEO AUTHENTICATION SYSTEM
+              AI-POWERED {isVideo ? "VIDEO" : "BIOMETRIC"} AUTHENTICATION SYSTEM
             </p>
           </div>
 
@@ -155,7 +161,7 @@ export const ForensicHUD: React.FC<ForensicHUDProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Left Column (Span 4) */}
         <div className="lg:col-span-4 flex flex-col gap-4">
-          {/* Panel 1: Input Video Frame */}
+          {/* Panel 1: Input Video Frame / Source Feed (Displays Real Uploaded Image with Accurate Face BBoxes) */}
           <div className="h-[360px]">
             <BiometricFaceMesh
               currentFrame={currentFrame}
@@ -164,6 +170,8 @@ export const ForensicHUD: React.FC<ForensicHUDProps> = ({
               totalDurationSec={durationSec * 2.5}
               onFrameChange={(f) => setCurrentFrame(f)}
               rawImageUrl={rawImageUrl}
+              faces={detectedFaces}
+              isVideo={isVideo}
               fakeProbability={fakeProb}
             />
           </div>
