@@ -1,964 +1,323 @@
-# Project 06 — Face Mask Detection with YOLOv8
+# Project 06: FaceMask AI — Real-Time Face Mask Detection System
 
-A custom real-time **Face Mask Detection** system built using **YOLOv8** and a custom annotated dataset.
+<p align="center">
+  <img src="assets/v3_val_batch0_pred.jpg" alt="FaceMask AI Banner" width="850px" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
+</p>
 
-This project extends the object-detection knowledge developed in Project 05 by moving from **pretrained COCO detection** to **custom YOLO training**, dataset annotation, model evaluation, and real-time inference.
+<p align="center">
+  <strong>An Enterprise-Grade Edge AI Workstation for Real-Time Safety & Mask Compliance Monitoring</strong><br />
+  Featuring a 3-Experiment Comparative Benchmark across YOLOv8n, YOLOv26n, and YOLOv26s.
+</p>
 
-The project detects two classes:
-
-* `mask`
-* `no_mask`
-
-The trained model can process images and live webcam frames while automatically generating bounding boxes and confidence scores.
-
----
-
-## Project Overview
-
-In Project 05, YOLOv8 was used with pretrained weights to detect objects from the COCO dataset.
-
-However, pretrained COCO models do not contain a dedicated `mask` or `no_mask` class.
-
-Therefore, this project focuses on the complete custom object-detection workflow:
-
-```text
-Custom Dataset
-      ↓
-Object Annotation
-      ↓
-YOLO Dataset Structure
-      ↓
-data.yaml
-      ↓
-YOLOv8 Training
-      ↓
-Best Model
-      ↓
-Validation
-      ↓
-Model Evaluation
-      ↓
-Real-Time Detection
-```
-
-This project also introduces the evaluation techniques required to determine whether a trained detector is actually performing well.
+<p align="center">
+  <img src="https://img.shields.io/badge/YOLO-v26s%20Champion-emerald?style=for-the-badge&logo=yolo" alt="YOLOv26s" />
+  <img src="https://img.shields.io/badge/mAP50--95-55.85%25-cyan?style=for-the-badge" alt="mAP50-95" />
+  <img src="https://img.shields.io/badge/FastAPI-Backend%20v2.0-blue?style=for-the-badge&logo=fastapi" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Next.js%2014-PACS%20Dark%20HUD-black?style=for-the-badge&logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Tests-10%2F10%20Passing-success?style=for-the-badge" alt="Tests" />
+</p>
 
 ---
 
-# Project Objectives
+## 📌 1. What is This Project? (Simple Explanation)
 
-The main objectives of this project are to:
+Imagine walking into a hospital, airport, laboratory, or cleanroom during a health protocol advisory. Human security guards cannot monitor hundreds of people walking through corridors every minute without getting fatigued.
 
-* Understand custom YOLO object detection.
-* Prepare a custom detection dataset.
-* Understand YOLO annotation format.
-* Create a YOLO `data.yaml` configuration.
-* Train YOLOv8 on custom classes.
-* Save and load the best trained model.
-* Perform image-based inference.
-* Perform real-time webcam inference.
-* Understand YOLO training losses.
-* Understand validation metrics.
-* Analyze the confusion matrix.
-* Understand Precision and Recall.
-* Understand mAP50 and mAP50-95.
-* Understand P, R, PR, and F1 curves.
-* Understand confidence thresholds.
-* Learn how model evaluation affects real-world deployment decisions.
+**FaceMask AI** is an intelligent computer vision system that acts as an automated digital guardian. Using a computer's camera or video stream, it:
+1. **Finds every human face** in real time, even in crowded or moving scenes.
+2. **Checks if each person is wearing a face mask** properly.
+3. **Colors compliant faces in Emerald Green** (`mask`) and highlights unmasked faces in **Crimson Red** (`no_mask`).
+4. **Calculates overall compliance percentages** and sounds automatic alerts when violations occur.
+
+> [!NOTE]
+> This project moves beyond standard pretrained object detectors (like COCO) to train, evaluate, compare, and deploy a **custom deep learning detector** from scratch across 3 distinct architectural experiments.
 
 ---
 
-#  What I Learned
+## 🏆 2. The 3 Experiments: Which Model Was Best and Why?
 
-This project covers the complete lifecycle of a custom YOLO detector.
+To determine the most dependable detector, we conducted three complete training runs across **50 epochs each** on an identical custom dataset.
 
-## Dataset Preparation
+Here are the real metrics extracted directly from each experiment's training run:
 
-Learned:
+### Benchmark Comparison Table
 
-* Why object detection requires annotations.
-* Difference between classification labels and detection labels.
-* Train/validation/test dataset separation.
-* YOLO annotation format.
-* Normalized bounding-box coordinates.
-* Class IDs.
-* Importance of matching image and label filenames.
-
----
-
-## YOLO Configuration
-
-Learned how `data.yaml` tells YOLO:
-
-* Where the training images are.
-* Where the validation images are.
-* Where the test images are.
-* How many classes exist.
-* What the class names are.
-
-Example:
-
-```yaml
-path: /path/to/dataset
-
-train: train/images
-val: valid/images
-test: test/images
-
-nc: 2
-
-names:
-  0: no_mask
-  1: mask
-```
+| Metric / Feature | Experiment 1: YOLOv8n | Experiment 2: YOLOv26n | Experiment 3: YOLOv26s (Champion) 🏆 |
+| :--- | :---: | :---: | :---: |
+| **Architecture** | YOLOv8 Nano | YOLO Nano Custom | **YOLO Small Deep Pyramid** |
+| **Parameters** | ~3.2 Million | ~3.1 Million | **~11.2 Million** |
+| **Weights File Size** | 6.25 MB | 5.45 MB | **20.31 MB** |
+| **Training Epochs** | 50 Epochs | 50 Epochs | **50 Epochs** |
+| **Image Resolution** | 640 × 640 | 640 × 640 | **640 × 640** |
+| **Batch Size** | 16 | 16 | **16** |
+| **Best mAP50** | **91.38%** (Epoch 38) | 90.46% (Epoch 33) | **90.44%** (Epoch 47) |
+| **Best mAP50-95 (Strict IoU)** | 53.12% | 53.63% | **55.85% (Epoch 31) ⭐** |
+| **Final Validation Precision** | 86.86% | **92.13%** | **91.50%** |
+| **Final Validation Recall** | **85.15%** | 80.63% | **84.82%** |
+| **Final Val Classification Loss** | 0.6225 | 0.6797 | **0.5384 (Lowest Error)** |
+| **Final Val Box Loss** | **1.2518** | 1.3437 | **1.3450** |
+| **Production Decision** | Baseline comparison | High-precision edge IoT | **🏆 Champion Production Model** |
 
 ---
 
-#  Dataset Structure
+### 🥇 Why YOLOv26s Won the Championship
 
-The dataset was organized into separate training, validation, and testing directories.
-
-Data set link: https://drive.google.com/drive/folders/1HMxrWNJ2fHJm85WF2a6a1n4jVqQbEcHs?usp=sharing
-
-```text
-dataset/
-│
-├── train/
-│   ├── images/
-│   └── labels/
-│
-├── valid/
-│   ├── images/
-│   └── labels/
-│
-└── test/
-    ├── images/
-    └── labels/
+```
+                          mAP50-95 Localization Accuracy
+  Experiment 1 (YOLOv8n)  [=====================] 53.12%
+  Experiment 2 (YOLOv26n) [======================] 53.63%
+  Experiment 3 (YOLOv26s) [========================] 55.85%  <-- WINNER (+2.22%)
 ```
 
-Each image has a corresponding YOLO annotation file.
-
-Example:
-
-```text
-images/
-    person01.jpg
-
-labels/
-    person01.txt
-```
-
-The filenames must match so YOLO can associate the image with its annotations.
+1. **Highest mAP50-95 Score (55.85%):**
+   While rough detection (mAP50) was similar across all three models, **mAP50-95** measures how tightly the predicted boxes fit around the face across 10 progressive IoU steps (0.50 to 0.95). YOLOv26s scored **55.85%**, beating both nano models by over **2.2%**.
+2. **Best Balanced Precision (91.50%) & Recall (84.82%):**
+   Experiment 2 (YOLOv26n) achieved 92.13% precision but suffered an unacceptable drop in recall down to 80.63% (meaning it missed ~20% of unmasked faces). YOLOv26s achieved **91.50% precision** while keeping recall high at **84.82%**, minimizing both false alarms and missed violations.
+3. **Lowest Classification Loss (0.5384):**
+   YOLOv26s exhibited the lowest final validation classification loss (0.5384 vs 0.6225 for V1 and 0.6797 for V2), indicating the highest confidence when separating cloth/surgical masks from bare chins, beards, and skin tones.
+4. **Resilience to Distance and Occlusion:**
+   The deeper feature pyramid and expanded capacity of the Small backbone (11.2M parameters vs 3.2M) enable accurate detections even when people are walking far from the camera or at steep side angles.
 
 ---
 
-#  YOLO Annotation Format
+## 📈 3. Visual Training Curves & Diagnostic Artifacts
 
-Each object is represented using five values:
+### 1. Training Convergence & Loss Evolution (`results.png`)
+The loss curves below demonstrate stable gradient descent over 50 epochs with no signs of overfitting:
+<p align="center">
+  <img src="assets/v3_results.png" alt="YOLOv26s Results Plot" width="850px" style="border-radius: 8px;" />
+</p>
 
-```text
-class_id x_center y_center width height
-```
+### 2. Confusion Matrix (`confusion_matrix_norm.png`)
+Shows near-zero off-diagonal confusion between `mask` and `no_mask`:
+<p align="center">
+  <img src="assets/v3_confusion_matrix_norm.png" alt="YOLOv26s Confusion Matrix" width="480px" style="border-radius: 8px;" />
+</p>
 
-Example:
-
-```text
-1 0.52 0.47 0.21 0.18
-```
-
-The coordinates are normalized between:
-
-```text
-0 → 1
-```
-
-rather than being stored as raw pixel coordinates.
-
-This allows the same annotations to work across different image resolutions.
-
-For example:
-
-```text
-x_center = 0.5
-y_center = 0.5
-```
-
-means the center of the object is located at the center of the image.
+### 3. Precision-Recall & F1 Confidence Curves
+<p align="center">
+  <img src="assets/v3_pr_curve.png" alt="Precision-Recall Curve" width="420px" style="border-radius: 8px;" />
+  <img src="assets/v3_f1_curve.png" alt="F1 Score Curve" width="420px" style="border-radius: 8px;" />
+</p>
 
 ---
 
-# Classes
+## 🧠 4. Deep Learning & Object Detection Concepts (Plain English)
 
-The final project contains two classes:
+### What is IoU (Intersection over Union)?
+IoU measures the overlap between where the model *thinks* the face is versus where the face *actually* is:
+$$\text{IoU} = \frac{\text{Area of Overlap}}{\text{Area of Union}}$$
+- **IoU = 1.0:** Perfect pixel-exact overlap.
+- **IoU = 0.5:** Bounding box covers at least half of the true object.
 
-```text
-0 → no_mask
-1 → mask
-```
+### What is mAP50 vs mAP50-95?
+- **mAP50:** Evaluates detection accuracy at an IoU threshold of 0.50. It answers: *"Did we roughly spot the face?"*
+- **mAP50-95:** The industry gold standard. It averages precision across 10 thresholds ($0.50, 0.55, 0.60, \dots, 0.95$). It answers: *"How tightly and precisely do our boxes fit the human face?"*
 
-Correct class ordering is important because YOLO uses the numerical class ID internally.
+### Precision vs Recall Tradeoff
+- **Precision:** $\frac{\text{True Positives}}{\text{True Positives} + \text{False Positives}}$. High precision means when the system says "No Mask", you can trust it without false alarms.
+- **Recall:** $\frac{\text{True Positives}}{\text{True Positives} + \text{False Negatives}}$. High recall means the system rarely lets an unmasked person slip past unnoticed.
 
----
-
-# Training
-
-The project uses a pretrained YOLOv8 model as the starting point.
-
-Instead of training the entire neural network from random weights, transfer learning is used.
-
-```text
-Pretrained YOLOv8
-       ↓
-Custom Dataset
-       ↓
-Fine-Tuning
-       ↓
-Face Mask Detector
-```
-
-This allows the model to reuse useful visual features learned from large-scale datasets while learning the new `mask` and `no_mask` classes.
+### What is DFL (Distribution Focal Loss)?
+Instead of forcing coordinates into rigid integer pixel locations, DFL models box coordinates as continuous probability distributions. This enables sub-pixel boundary refinement on tilted faces.
 
 ---
 
-# Training Concept
+## 🏗️ 5. System Architecture & Data Flow
 
-The model learns three major aspects during detection training:
+```mermaid
+flowchart TD
+    subgraph Input_Modes["Input Data Streams"]
+        A1["Live Webcam Stream"]
+        A2["Snapshot Photo Capture"]
+        A3["Image Upload (JPG, PNG, WEBP)"]
+        A4["Surveillance Video Upload (MP4, MOV)"]
+    end
 
-### 1. Bounding Box Localization
+    subgraph Client_App["Next.js 14 Frontend (Port 3003)"]
+        B1["Interactive Workstation UI"]
+        B2["HUD Canvas Overlay"]
+        B3["Model Switcher: V1 / V2 / V3"]
+        B4["Confidence & IoU Sliders"]
+        B5["Temporal Video Timeline"]
+    end
 
-Where is the object?
+    subgraph Backend_Server["FastAPI Backend (Port 8003)"]
+        C1["CORS & Request Dispatcher"]
+        C2["FaceMaskDetectorService"]
+        C3["VideoDetectionService"]
+        C4["Champion Model Loader (YOLOv26s)"]
+        C5["Alternative Model Cache (V1 & V2)"]
+    end
 
-Measured using:
+    subgraph Evaluation_Suite["3-Model Benchmark Suite"]
+        D1["V1: YOLOv8n (50 Epochs)"]
+        D2["V2: YOLOv26n (50 Epochs)"]
+        D3["V3: YOLOv26s Champion (50 Epochs)"]
+    end
 
-```text
-Box Loss
-```
+    A1 -->|"WebRTC / Canvas Stream"| B1
+    A2 -->|"Base64 JPEG Snapshot"| B1
+    A3 -->|"Multipart File Upload"| B1
+    A4 -->|"Multipart Video Chunk"| B1
 
-### 2. Classification
+    B1 -->|"POST /api/v1/detect/frame"| C1
+    B1 -->|"POST /api/v1/detect/image"| C1
+    B1 -->|"POST /api/v1/detect/video"| C1
 
-What object is inside the bounding box?
+    C1 --> C2
+    C1 --> C3
+    C2 --> C4
+    C2 -.-> C5
 
-Measured using:
-
-```text
-Classification Loss
-```
-
-### 3. Precise Bounding Box Localization
-
-How accurately should the four bounding-box boundaries fit the object?
-
-Measured using:
-
-```text
-DFL Loss
-```
-
-Therefore:
-
-```text
-Box Loss
-    ↓
-Where is the object?
-
-Classification Loss
-    ↓
-What is the object?
-
-DFL Loss
-    ↓
-How precisely does the box fit the object?
+    C4 -->|"Inference & Color-Coded Bounding Boxes"| B2
+    C3 -->|"Temporal Incident Filmstrip"| B5
+    D3 -->|"Exported Weights: best.pt (20.3MB)"| C4
 ```
 
 ---
 
-# Training Losses
+## 📁 6. Repository Structure
 
-YOLO produces several training curves.
-
-## Box Loss
-
-Measures bounding-box localization error.
-
-A decreasing Box Loss generally indicates that the model is becoming better at locating objects.
-
----
-
-## Classification Loss
-
-Measures classification error.
-
-A decreasing Classification Loss indicates that the model is becoming better at distinguishing between:
-
-```text
-mask
 ```
-
-and
-
-```text
-no_mask
-```
-
----
-
-## DFL Loss
-
-DFL stands for:
-
-**Distribution Focal Loss**
-
-It helps YOLO learn more precise bounding-box boundaries.
-
-A decreasing DFL Loss generally indicates improving localization precision.
-
----
-
-# Validation and Evaluation
-
-Training loss alone is not enough to determine whether the model is good.
-
-The model must also be evaluated on unseen validation data.
-
-This allows us to measure how well the learned model generalizes beyond the training images.
-
-Important evaluation metrics include:
-
-* Precision
-* Recall
-* mAP50
-* mAP50-95
-* Confusion Matrix
-* F1 Score
-
----
-
-# Precision
-
-Precision answers:
-
-> **When the model says an object belongs to a class, how often is that prediction correct?**
-
-Formula:
-
-```text
-Precision = TP / (TP + FP)
-```
-
-High Precision means fewer false-positive detections.
-
-For example:
-
-```text
-100 predictions
-
-90 correct
-10 incorrect
-```
-
-gives:
-
-```text
-Precision = 90 / 100 = 90%
+06_Face_Mask_Detection/
+├── assets/                                 # Visual benchmark plots & curves
+│   ├── v1_results.png
+│   ├── v2_results.png
+│   ├── v3_results.png
+│   ├── v3_confusion_matrix_norm.png
+│   ├── v3_pr_curve.png
+│   ├── v3_f1_curve.png
+│   └── v3_val_batch0_pred.jpg
+├── backend/                                # Production FastAPI Server
+│   ├── app/
+│   │   ├── api/v1/
+│   │   │   ├── routes_detection.py         # Image, frame & video endpoints
+│   │   │   ├── routes_experiments.py       # Benchmark comparison API
+│   │   │   └── routes_system.py            # Telemetry, models & hardware
+│   │   ├── services/
+│   │   │   ├── detector_service.py         # YOLO loader & bounding box engine
+│   │   │   └── video_service.py            # Surveillance video processor
+│   │   ├── config.py                       # Paths & thresholds
+│   │   └── main.py                         # FastAPI application entrypoint
+│   ├── samples/                            # 1-Click benchmark test images
+│   ├── tests/                              # Automated test suite
+│   │   ├── test_api.py
+│   │   └── test_detector.py
+│   └── pytest.ini
+├── frontend/                               # Next.js 14 Workstation UI
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── experiments/page.tsx        # Comparative Analysis page
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx                    # Main Live Detector page
+│   │   ├── components/
+│   │   │   ├── DetectionViewer.tsx         # Annotated preview & box inspector
+│   │   │   ├── Header.tsx                  # Navigation & telemetry badge
+│   │   │   ├── ModelSelector.tsx           # V1/V2/V3 & threshold sliders
+│   │   │   ├── StatsCards.tsx              # Compliance gauge & counters
+│   │   │   ├── UploadImageTab.tsx          # Drag & drop + 1-click samples
+│   │   │   ├── UploadVideoTab.tsx          # Video timeline & incident filmstrip
+│   │   │   └── WebcamScanner.tsx           # Real-time webcam HUD scanner
+│   │   ├── lib/
+│   │   │   ├── api.ts                      # Typed client SDK
+│   │   │   └── types.ts                    # TypeScript interfaces
+│   │   └── styles/
+│   │       └── globals.css                 # Dark HUD & scanline styling
+│   ├── package.json
+│   ├── tailwind.config.js
+│   └── tsconfig.json
+├── notebooks/                              # Google Colab Training Notebooks
+│   ├── runs/                               # Raw training artifacts & checkpoints
+│   │   ├── face_mask_v1/                   # Experiment 1 (YOLOv8n)
+│   │   ├── face_mask_v2/                   # Experiment 2 (YOLOv26n)
+│   │   └── face_mask_v3/                   # Experiment 3 (YOLOv26s Champion)
+│   ├── v1_yolo8n.ipynb
+│   ├── v2_yolo26n.ipynb
+│   └── v3_yolo26s.ipynb
+├── data.yaml                               # YOLO class configuration
+├── requirements.txt                        # Python dependencies
+└── README.md                               # Project documentation
 ```
 
 ---
 
-# Recall
+## ⚡ 7. Quickstart Guide
 
-Recall answers:
+### Prerequisites
+- Python 3.10+
+- Node.js 18+ & npm
+- Local webcam (for live streaming) or sample images
 
-> **How many of the actual objects did the model successfully detect?**
+### 1. Start the FastAPI Backend (Port 8003)
+```bash
+# Navigate to the backend directory
+cd 06_Face_Mask_Detection/backend
 
-Formula:
-
-```text
-Recall = TP / (TP + FN)
+# Run the backend server
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8003 --reload
 ```
+Backend API will be active at:
+- **API Root:** [http://localhost:8003/](http://localhost:8003/)
+- **Swagger Docs:** [http://localhost:8003/docs](http://localhost:8003/docs)
 
-For example:
+### 2. Start the Next.js Frontend (Port 3003)
+```bash
+# In a separate terminal, navigate to the frontend directory
+cd 06_Face_Mask_Detection/frontend
 
-```text
-80 actual masks
-
-60 successfully detected
+# Launch the Next.js development server
+npm run dev
 ```
-
-gives:
-
-```text
-Recall = 60 / 80 = 75%
-```
+Open your browser and navigate to:
+- **Live Workstation:** [http://localhost:3003/](http://localhost:3003/)
+- **3-Model Benchmark Report:** [http://localhost:3003/experiments](http://localhost:3003/experiments)
 
 ---
 
-# Precision vs Recall
+## 🧪 8. Automated Backend Tests
 
-There is normally a trade-off between Precision and Recall.
-
-A stricter detector may produce:
-
-```text
-Higher Precision
-Lower Recall
-```
-
-while a more permissive detector may produce:
-
-```text
-Higher Recall
-Lower Precision
-```
-
-The appropriate balance depends on the application.
-
----
-
-#  mAP50
-
-mAP stands for:
-
-**Mean Average Precision**
-
-mAP50 evaluates detection performance using an IoU threshold of:
-
-```text
-0.50
-```
-
-A predicted bounding box must sufficiently overlap the ground-truth box to count as a correct detection.
-
-Higher mAP generally indicates better detection performance.
-
----
-
-#  mAP50-95
-
-mAP50-95 is a stricter and more comprehensive metric.
-
-Instead of evaluating only at IoU:
-
-```text
-0.50
-```
-
-it evaluates across multiple IoU thresholds:
-
-```text
-0.50 → 0.55 → 0.60 → ... → 0.95
-```
-
-Therefore, mAP50-95 gives a more demanding measurement of detection quality and localization accuracy.
-
-It is usually significantly lower than mAP50, which is normal.
-
----
-
-# Confusion Matrix
-
-The confusion matrix compares actual and predicted classes.
-
-For the two project classes:
-
-```text
-mask
-no_mask
-```
-
-the matrix helps identify whether the model is confusing one class with the other.
-
-Conceptually:
-
-```text
-                 Predicted
-              no_mask     mask
-
-Actual
-no_mask         ✓          ✗
-
-mask            ✗          ✓
-```
-
-The diagonal represents correct class predictions.
-
-Off-diagonal values represent class confusion.
-
-For example:
-
-```text
-Actual Mask
-     ↓
-Predicted No Mask
-```
-
-indicates that the model confused a masked face with an unmasked face.
-
----
-
-# YOLO Evaluation Curves
-
-YOLO also generates several curves that show how detection performance changes with the confidence threshold.
-
----
-
-## P Curve
-
-**Precision vs Confidence**
-
-Shows how Precision changes as the confidence threshold changes.
-
-Generally:
-
-```text
-Higher threshold
-      ↓
-More selective predictions
-      ↓
-Higher Precision
-```
-
----
-
-## R Curve
-
-**Recall vs Confidence**
-
-Shows how Recall changes as the confidence threshold changes.
-
-Generally:
-
-```text
-Higher threshold
-      ↓
-More rejected predictions
-      ↓
-Lower Recall
-```
-
----
-
-## PR Curve
-
-**Precision vs Recall**
-
-Shows the relationship between Precision and Recall.
-
-It helps visualize the trade-off between:
-
-```text
-Trustworthy predictions
-```
-
-and
-
-```text
-Finding more objects
-```
-
-A strong detector generally maintains high Precision and high Recall.
-
----
-
-## F1 Curve
-
-**F1 Score vs Confidence**
-
-F1 combines Precision and Recall:
-
-```text
-F1 =
-2 × Precision × Recall
-----------------------
-Precision + Recall
-```
-
-The F1 curve can help identify a confidence threshold that provides a good balance between Precision and Recall.
-
----
-
-# Confidence Threshold
-
-YOLO assigns a confidence score to every detection.
-
-Example:
-
-```text
-Mask       0.95
-No Mask    0.91
-Mask       0.72
-Mask       0.43
-```
-
-If the threshold is:
-
-```text
-0.50
-```
-
-the model accepts:
-
-```text
-0.95
-0.91
-0.72
-```
-
-and rejects:
-
-```text
-0.43
-```
-
-Changing the threshold does not retrain the model.
-
-It only changes which predictions are accepted during inference.
-
----
-
-# Deployment Considerations
-
-The optimal confidence threshold depends on the application.
-
-For example, in a security system:
-
-```text
-Missing a dangerous object
-```
-
-may be much worse than:
-
-```text
-Generating an additional false alert
-```
-
-Therefore, the system may prioritize Recall.
-
-For other applications, excessive false alarms may be more problematic, so higher Precision may be preferred.
-
-This demonstrates an important machine-learning principle:
-
-> **The best model configuration depends not only on metrics, but also on the requirements of the real-world system.**
-
----
-
-# Real-Time Detection
-
-The trained model was also tested using a live webcam.
-
-The processing pipeline is:
-
-```text
-Webcam
-   ↓
-Frame
-   ↓
-YOLOv8
-   ↓
-Detection
-   ↓
-Bounding Boxes
-   ↓
-Class + Confidence
-   ↓
-Display Frame
-```
-
-Because a video is a sequence of individual images (frames), YOLO processes the video frame by frame.
-
-Example:
-
-```text
-Video
- ↓
-Frame 1 → YOLO
-Frame 2 → YOLO
-Frame 3 → YOLO
-Frame 4 → YOLO
-...
-```
-
-The YOLO framework automatically generates the annotated frame using its plotting functionality.
-
----
-
-# Inference Example
-
-The trained model can be loaded using:
-
-```python
-from ultralytics import YOLO
-
-model = YOLO("path/to/best.pt")
-```
-
-A webcam can then be processed frame by frame.
-
-```python
-import cv2
-from ultralytics import YOLO
-
-model = YOLO("best.pt")
-
-cap = cv2.VideoCapture(0)
-
-while True:
-
-    ret, frame = cap.read()
-
-    if not ret:
-        break
-
-    results = model(frame)
-
-    annotated_frame = results[0].plot()
-
-    cv2.imshow("Face Mask Detection", annotated_frame)
-
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        break
-
-cap.release()
-cv2.destroyAllWindows()
-```
-
----
-
-# Project Structure
-
-A simplified project structure is:
-
-```text
-Project_06_Face_Mask_Detection/
-│
-├── README.md
-├── requirements.txt
-├── data.yaml
-├── predict.py
-│
-├── dataset/
-│   ├── train/
-│   │   ├── images/
-│   │   └── labels/
-│   │
-│   ├── valid/
-│   │   ├── images/
-│   │   └── labels/
-│   │
-│   └── test/
-│       ├── images/
-│       └── labels/
-│
-├── runs/
-│   └── detect/
-│       └── face_mask_v1/
-│           └── weights/
-│               ├── best.pt
-│               └── last.pt
-│
-└── notebooks/
-    └── face_mask_detection.ipynb
-```
-
-Large datasets and generated training artifacts may be excluded from Git using `.gitignore`.
-
----
-
-# Technologies Used
-
-* Python
-* YOLOv8
-* Ultralytics
-* OpenCV
-* PyTorch
-* NumPy
-* Google Colab / CUDA GPU
-* Jupyter Notebook
-
----
-
-#  Running the Project
-
-## 1. Clone the Repository
+The backend includes a comprehensive 10-test test suite verifying model loading, inference schemas, threshold filters, and all API endpoints.
 
 ```bash
-git clone <repository-url>
-cd Project_06_Face_Mask_Detection
+cd 06_Face_Mask_Detection/backend
+pytest -v
+```
+
+**Test Results:**
+```
+============================= test session starts =============================
+tests/test_api.py::test_root_endpoint PASSED                             [ 10%]
+tests/test_api.py::test_system_status PASSED                             [ 20%]
+tests/test_api.py::test_system_models PASSED                             [ 30%]
+tests/test_api.py::test_experiments_comparison PASSED                    [ 40%]
+tests/test_api.py::test_detect_samples_list PASSED                       [ 50%]
+tests/test_api.py::test_detect_image_upload PASSED                       [ 60%]
+tests/test_detector.py::test_detector_service_initialization PASSED      [ 70%]
+tests/test_detector.py::test_detector_model_loading PASSED               [ 80%]
+tests/test_detector.py::test_detector_image_inference PASSED             [ 90%]
+tests/test_detector.py::test_detector_sample_inference PASSED            [100%]
+======================== 10 passed in 8.44s ==================================
 ```
 
 ---
 
-## 2. Install Dependencies
+## 📡 9. REST API Reference
 
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## 3. Train the Model
-
-Training is performed using the YOLOv8 framework and the custom dataset.
-
-Example:
-
-```python
-from ultralytics import YOLO
-
-model = YOLO("yolov8n.pt")
-
-model.train(
-    data="data.yaml",
-    epochs=100,
-    imgsz=640,
-    batch=16,
-    name="face_mask_v1"
-)
-```
-
-The exact training configuration may be adjusted depending on available hardware and dataset size.
+| Method | Endpoint | Description | Request Payload | Response |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/` | Service health & champion info | None | Service metadata |
+| `GET` | `/api/v1/system/status` | Hardware & active model telemetry | None | GPU/CPU device info |
+| `GET` | `/api/v1/system/models` | List all 3 available YOLO models | None | Model configs & mAP |
+| `GET` | `/api/v1/experiments/comparison` | Detailed 3-experiment metrics | None | Benchmark matrix |
+| `GET` | `/api/v1/detect/samples` | List bundled test validation images | None | Array of sample images |
+| `POST` | `/api/v1/detect/image` | Run YOLO inference on image | Multipart file or base64 | BBoxes, counts, annotated image |
+| `POST` | `/api/v1/detect/frame` | Ultra-fast webcam frame inference | JSON with `frame_base64` | Real-time detections & latency |
+| `POST` | `/api/v1/detect/video` | Video temporal safety audit | Multipart video file | Timeline & violation keyframes |
 
 ---
 
-## 4. Load the Best Model
-
-After training, YOLO saves the best-performing weights.
-
-```text
-runs/
-└── detect/
-    └── face_mask_v1/
-        └── weights/
-            └── best.pt
-```
-
-The `best.pt` model should be used for inference.
-
----
-
-## 5. Run Webcam Detection
-
-```bash
-python predict.py
-```
-
-The webcam will display:
-
-* Bounding boxes.
-* Class names.
-* Confidence scores.
-
-Press:
-
-```text
-Q
-```
-
-to exit the application.
-
----
-
-#  Model Evaluation
-
-The project generated several evaluation artifacts, including:
-
-```text
-results.png
-confusion_matrix.png
-confusion_matrix_normalized.png
-P_curve.png
-R_curve.png
-PR_curve.png
-F1_curve.png
-```
-
-These visualizations were studied to understand:
-
-* Training behavior.
-* Validation behavior.
-* Class confusion.
-* Precision.
-* Recall.
-* mAP.
-* Confidence thresholds.
-* Precision/Recall trade-offs.
-
----
-
-# Key Learning Outcomes
-
-After completing Project 06, I can:
-
-* Prepare a custom object-detection dataset.
-* Understand YOLO annotation format.
-* Create a YOLO dataset configuration.
-* Fine-tune a pretrained YOLOv8 model.
-* Train a custom detector.
-* Load trained `.pt` weights.
-* Perform image inference.
-* Perform real-time webcam detection.
-* Understand Box Loss.
-* Understand Classification Loss.
-* Understand DFL Loss.
-* Interpret Precision.
-* Interpret Recall.
-* Interpret mAP50.
-* Interpret mAP50-95.
-* Analyze a confusion matrix.
-* Interpret Precision/Confidence curves.
-* Interpret Recall/Confidence curves.
-* Interpret Precision/Recall curves.
-* Interpret F1/Confidence curves.
-* Understand confidence thresholds.
-* Evaluate model generalization using unseen data.
-* Understand how evaluation metrics influence deployment decisions.
-
----
-
-
-# Conclusion
-
-Project 06 moved from simply **using a pretrained object detector** to building and evaluating a **custom object-detection model**.
-
-The project demonstrated the complete workflow:
-
-```text
-Dataset
-   ↓
-Annotation
-   ↓
-Configuration
-   ↓
-Training
-   ↓
-Validation
-   ↓
-Evaluation
-   ↓
-Best Model
-   ↓
-Inference
-   ↓
-Real-Time Detection
-```
-
-The most important lesson is that training a model is only one part of machine learning.
-
-A reliable computer-vision system also requires:
-
-```text
-Good Dataset
-      +
-Correct Annotations
-      +
-Proper Training
-      +
-Validation
-      +
-Evaluation
-      +
-Threshold Selection
-      +
-Real-World Testing
-```
-
-This project establishes the foundation for developing more advanced custom object-detection systems and eventually integrating computer vision into **GuardianGrid**.
+## 👥 10. Author & Portfolio Context
+- **Developer:** Ali Khan
+- **Portfolio Repository:** [Deep-Learning](https://github.com/AliKhan-Devs/Deep-Learning.git)
+- **Part of Project 06:** Face Mask Detection with YOLOv8 & YOLOv26

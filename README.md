@@ -76,13 +76,13 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 
 ---
 
-## Object Detection (Upcoming)
+## Object Detection & Edge Vision
 
 * [x] Bounding Boxes
 * [x] Intersection over Union (IoU)
 * [x] Non-Maximum Suppression (NMS)
 * [x] YOLOv8
-* [ ] Custom YOLO Training
+* [x] Custom YOLO Training (3-Model Comparative Benchmark)
 * [ ] Object Tracking
 
 ---
@@ -108,7 +108,7 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 | 03 | CIFAR-10 Image Classification (Deep CNN)                   | ✅ Completed   |
 | 04 | Transfer Learning with ResNet18                            | ✅ Completed   |
 | 05 | YOLOv8 Object Detection                                    | ✅ Completed   |
-| 06 | Face Mask Detection (YOLO)                                 | ✅ Completed   |
+| 06 | FaceMask AI – Real-Time Safety & Mask Workstation (YOLOv26s) | ✅ Completed   |
 | 07 | DeepGuard AI – Deepfake Detection System                   | ✅ Completed   |
 | 08 | VisionAttend AI – Biometric Facial Attendance & Analytics  | ✅ Completed   |
 | 09 | NeuroScan XAI – Explainable Brain MRI Tumor Diagnosis      | ✅ Completed   |
