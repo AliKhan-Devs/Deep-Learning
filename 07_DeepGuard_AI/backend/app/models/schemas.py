@@ -128,3 +128,51 @@ class HistoryResponse(BaseModel):
     total_videos: int
     manipulated_count: int
     authentic_count: int
+
+
+class ModelBenchmarkItem(BaseModel):
+    model_name: str
+    display_name: str
+    architecture: str
+    input_size: List[int]
+    weights_size_mb: float
+    test_accuracy: float
+    macro_precision: float
+    macro_recall: float
+    macro_f1: float
+    roc_auc: float
+    fake_recall: float
+    real_precision: float
+    val_loss_min: float
+    total_test_samples: int
+    false_positives: int
+    false_negatives: int
+    metrics_image_url: str
+    roc_image_url: str
+    is_champion: bool
+    summary: str
+
+
+class ModelInferenceComparisonItem(BaseModel):
+    model_name: str
+    display_name: str
+    architecture: str
+    is_champion: bool
+    latency_ms: float
+    fps: float
+    prediction: str
+    fake_probability: float
+    real_probability: float
+    confidence: float
+    face_detected: bool
+    faces_count: int
+
+
+class MultiModelComparisonResponse(BaseModel):
+    analysis_id: str
+    created_at: str
+    original_filename: str
+    faces_detected_count: int
+    champion_model: str
+    models: List[ModelInferenceComparisonItem]
+

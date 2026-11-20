@@ -1,6 +1,6 @@
 {
   "model_name": "efficientnet_b4",
-  "display_name": "XceptionNet Deepfake Detector",
+  "display_name": "EfficientNet-B4 Deepfake Detector (Champion)",
   "architecture": "efficientnet_b4",
   "num_classes": 2,
   "classes": [

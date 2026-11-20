@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from typing import Tuple, Dict, Any, Optional
 
-from .efficientnet import EfficientNetB0Detector
+from .efficientnet import EfficientNetB0Detector, EfficientNetB4Detector
 from .xception import XceptionDetector
 
 
@@ -17,7 +17,7 @@ def create_model(
     Factory function to instantiate deepfake detection models.
 
     Args:
-        model_name: Identifier ('efficientnet_b0' or 'xception').
+        model_name: Identifier ('efficientnet_b4', 'efficientnet_b0', or 'xception').
         num_classes: Number of target classes (default 2: REAL, FAKE).
         pretrained: Whether to load ImageNet base weights.
         dropout: Optional custom dropout rate.
@@ -27,7 +27,10 @@ def create_model(
     """
     name_clean = model_name.lower().replace("-", "_").strip()
 
-    if "efficientnet" in name_clean:
+    if "b4" in name_clean:
+        rate = dropout if dropout is not None else 0.3
+        return EfficientNetB4Detector(num_classes=num_classes, pretrained=pretrained, dropout=rate)
+    elif "efficientnet" in name_clean:
         rate = dropout if dropout is not None else 0.3
         return EfficientNetB0Detector(num_classes=num_classes, pretrained=pretrained, dropout=rate)
     elif "xception" in name_clean:
@@ -36,7 +39,7 @@ def create_model(
     else:
         raise ValueError(
             f"Unsupported architecture '{model_name}'. "
-            "Supported options: ['efficientnet_b0', 'xception']"
+            "Supported options: ['efficientnet_b4', 'efficientnet_b0', 'xception']"
         )
 
 

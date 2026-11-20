@@ -16,7 +16,8 @@ from ..models.schemas import (
     VideoAnalysisResponse,
     VideoFrameDetail,
     HistoryResponse,
-    AnalysisSummaryItem
+    AnalysisSummaryItem,
+    MultiModelComparisonResponse,
 )
 from ..services.image_infer import image_infer_service
 from ..services.video_infer import video_infer_service
@@ -46,6 +47,29 @@ async def analyze_image_endpoint(
     except Exception as e:
         logger.error(f"Image analysis error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Internal analysis failure: {str(e)}")
+
+
+@router.post("/compare", response_model=MultiModelComparisonResponse)
+async def compare_models_endpoint(
+    file: UploadFile = File(..., description="Target image to evaluate across all 3 models")
+):
+    """
+    Submits an image to run concurrently/sequentially against all 3 models:
+    EfficientNet-B4 (Champion), EfficientNet-B0, and XceptionNet.
+    Returns latency, FPS, probabilities, and verdict side-by-side.
+    """
+    try:
+        content = await file.read()
+        return image_infer_service.compare_models(
+            file_bytes=content,
+            original_filename=file.filename or "compare.jpg"
+        )
+    except (FileValidationError, ModelNotFoundError, CheckpointMissingError):
+        raise
+    except Exception as e:
+        logger.error(f"Model comparison error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Internal comparison failure: {str(e)}")
+
 
 
 @router.post("/video")

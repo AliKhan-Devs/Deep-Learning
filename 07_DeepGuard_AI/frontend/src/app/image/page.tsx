@@ -4,36 +4,43 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   ShieldAlert,
+  ShieldCheck,
   CheckCircle,
   FileText,
   AlertCircle,
   RefreshCw,
-  ExternalLink,
-  Radio,
   Image as ImageIcon,
-  Download
+  Layers,
+  Award,
+  Zap,
 } from "lucide-react";
 import { api, ApiError } from "../../lib/api";
-import { ImageAnalysisResponse, ModelInfo } from "../../lib/types";
+import { ImageAnalysisResponse, ModelInfo, FacePrediction } from "../../lib/types";
 import { UploadZone } from "../../components/UploadZone";
 import { ModelSelector } from "../../components/ModelSelector";
-import { ForensicHUD } from "../../components/ForensicHUD";
 import { DisclaimerAlert } from "../../components/DisclaimerAlert";
 
 export default function ImageAnalysisPage() {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [models, setModels] = useState<ModelInfo[]>([]);
-  const [selectedModel, setSelectedModel] = useState("efficientnet_b0");
+  const [selectedModel, setSelectedModel] = useState("efficientnet_b4");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ImageAnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [imgNaturalSize, setImgNaturalSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
 
   useEffect(() => {
     api.getModels().then((m) => {
       setModels(m);
-      if (m.length > 0 && !selectedModel) {
-        setSelectedModel(m[0].model_name);
+      if (m.length > 0) {
+        // Prefer champion model if available
+        const champ = m.find((x) => x.model_name === "efficientnet_b4");
+        if (champ) {
+          setSelectedModel("efficientnet_b4");
+        } else {
+          setSelectedModel(m[0].model_name);
+        }
       }
     });
   }, []);
@@ -64,7 +71,7 @@ export default function ImageAnalysisPage() {
     } catch (err: any) {
       if (err instanceof ApiError && err.status === 422) {
         setError(
-          `Checkpoint Missing: ${err.message}. Please train the model in Google Colab and place 'best_model.pth' in the local directory.`
+          `Checkpoint Missing: ${err.message}. Please place 'best_model.pth' in the local artifacts directory.`
         );
       } else {
         setError(err.message || "Failed to analyze image.");
@@ -75,35 +82,41 @@ export default function ImageAnalysisPage() {
   };
 
   return (
-    <div className="w-full max-w-[1400px] mx-auto space-y-6">
-      {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#0d2a45]">
-        <div>
-          <div className="flex items-center gap-2">
-            <Radio className="w-4 h-4 text-hud-cyan animate-pulse" />
-            <h1 className="text-xl sm:text-2xl font-mono font-black tracking-widest text-white uppercase">
-              IMAGE FORENSIC INSPECTOR
+    <div className="space-y-8">
+      {/* Header Banner */}
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 mb-2">
+              <ImageIcon className="w-3.5 h-3.5 text-blue-600" /> Image Forensics
+            </div>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+              Single-Image Deepfake Forensic Inspector
             </h1>
+            <p className="text-slate-600 text-sm mt-1">
+              Automated multi-cascade face localization with deep feature extraction and binary classification.
+            </p>
           </div>
-          <p className="text-xs font-mono tracking-wider text-slate-400 mt-0.5">
-            MULTI-STAGE FACE LOCALIZATION & FINE-GRAINED SYNTHESIS DETECTION
-          </p>
+
+          <Link
+            href="/arena"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 transition-colors shadow-sm self-start sm:self-auto"
+          >
+            <Layers className="w-4 h-4 text-amber-600" />
+            Compare All 3 Models in Arena
+          </Link>
         </div>
       </div>
 
       {/* Model Selection & Upload Controls */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Model Architecture Selector */}
-        <div className="lg:col-span-5 hud-panel p-4 bg-[#050c18]/90 border border-[#0d2a45]">
-          <div className="reticle-tl" />
-          <div className="reticle-tr" />
-          <div className="reticle-bl" />
-          <div className="reticle-br" />
-
-          <div className="pb-2 mb-3 border-b border-[#0d2a45]">
-            <h3 className="text-xs font-mono font-bold tracking-widest text-hud-cyan uppercase">
-              NEURAL ARCHITECTURE SELECTOR
-            </h3>
+        <div className="lg:col-span-5 bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+              1. Select Architecture
+            </h2>
+            <span className="text-xs text-slate-500">Default: Champion</span>
           </div>
 
           <ModelSelector
@@ -114,18 +127,13 @@ export default function ImageAnalysisPage() {
           />
         </div>
 
-        {/* Source Media Ingestion */}
-        <div className="lg:col-span-7 hud-panel p-4 bg-[#050c18]/90 border border-[#0d2a45]">
-          <div className="reticle-tl" />
-          <div className="reticle-tr" />
-          <div className="reticle-bl" />
-          <div className="reticle-br" />
-
-          <div className="pb-2 mb-3 border-b border-[#0d2a45] flex items-center justify-between">
-            <h3 className="text-xs font-mono font-bold tracking-widest text-hud-cyan uppercase">
-              IMAGE INGESTION BUFFER
-            </h3>
-            <span className="text-[10px] font-mono text-slate-400">JPG, PNG, WEBP</span>
+        {/* Source Media Upload */}
+        <div className="lg:col-span-7 bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+              2. Upload Target Face
+            </h2>
+            <span className="text-xs text-slate-500">JPG, PNG (Max 15 MB)</span>
           </div>
 
           <UploadZone
@@ -137,18 +145,20 @@ export default function ImageAnalysisPage() {
           />
 
           {file && !result && (
-            <div className="flex justify-end pt-3">
+            <div className="flex justify-end pt-2">
               <button
                 onClick={handleAnalyze}
                 disabled={loading}
-                className="px-5 py-2 rounded text-xs font-mono font-black tracking-widest bg-hud-cyan hover:bg-cyan-300 text-slate-950 flex items-center gap-2 shadow-[0_0_15px_rgba(0,240,255,0.4)] transition-all disabled:opacity-50 uppercase"
+                className="px-6 py-2.5 rounded-xl font-semibold text-sm bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 shadow-sm transition-all disabled:opacity-50"
               >
                 {loading ? (
                   <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" /> SCANNING FACIAL ARTIFACTS...
+                    <RefreshCw className="w-4 h-4 animate-spin" /> Analyzing Facial Artifacts...
                   </>
                 ) : (
-                  "EXECUTE BIOMETRIC SCAN"
+                  <>
+                    <Zap className="w-4 h-4" /> Run Forensic Analysis
+                  </>
                 )}
               </button>
             </div>
@@ -158,103 +168,191 @@ export default function ImageAnalysisPage() {
 
       {/* Error Notice */}
       {error && (
-        <div className="p-4 rounded border border-hud-red/40 bg-hud-red/10 text-hud-red text-xs font-mono flex items-start gap-3 glow-red">
-          <AlertCircle className="w-4 h-4 text-hud-red shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <span className="font-bold">FORENSIC PIPELINE ERROR: </span>
+        <div className="p-4 rounded-xl border border-red-200 bg-red-50 text-red-700 text-sm flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+          <div>
+            <span className="font-semibold">Analysis Error: </span>
             {error}
           </div>
         </div>
       )}
 
-      {/* Primary Forensic HUD: Displays the image directly inside Panel 1 with accurate bounding boxes */}
+      {/* Image Preview with In-Image Detection Overlays */}
       {(result || previewUrl) && (
-        <div className="space-y-6 pt-2">
-          <ForensicHUD
-            imageData={result}
-            analysisId={result?.analysis_id}
-            imageUrl={previewUrl}
-            faces={result?.faces || []}
-            isDemo={!result}
-          />
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-blue-600" />
+                Detection Preview & In-Image Overlays
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Bounding boxes and probability scores are rendered directly over localized faces.
+              </p>
+            </div>
 
-          {/* Per-Face Prediction Telemetry Table (Clean tabular data only, no duplicate image below) */}
-          {result && result.faces && result.faces.length > 0 && (
-            <div className="hud-panel p-5 bg-[#050c18]/90 border border-[#0d2a45] space-y-4 font-mono">
-              <div className="reticle-tl" />
-              <div className="reticle-tr" />
-              <div className="reticle-bl" />
-              <div className="reticle-br" />
-
-              <div className="pb-2 border-b border-[#0d2a45] flex items-center justify-between">
-                <h3 className="text-xs font-bold tracking-widest text-hud-cyan uppercase">
-                  DETECTED BIOMETRIC TARGETS ({result.faces_detected_count} FACES LOCATED)
-                </h3>
-                <div className="flex items-center gap-2">
-                  <a
-                    href={api.getReportUrl(result.analysis_id, "json")}
-                    download
-                    className="px-2.5 py-1 rounded text-[11px] bg-[#091729] hover:bg-[#122842] text-hud-cyan border border-[#133454] flex items-center gap-1.5 transition-colors"
-                  >
-                    <Download className="w-3 h-3" /> JSON
-                  </a>
-                  <a
-                    href={api.getReportUrl(result.analysis_id, "html")}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-1 rounded text-[11px] bg-hud-cyan/20 hover:bg-hud-cyan/30 text-hud-cyan border border-hud-cyan/40 flex items-center gap-1.5 transition-colors"
-                  >
-                    <FileText className="w-3 h-3" /> OFFICIAL CERTIFICATE
-                  </a>
-                </div>
+            {result && (
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-mono text-slate-500">
+                  Latency: {(result.execution_duration_sec * 1000).toFixed(1)} ms
+                </span>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                    result.prediction === "Likely Manipulated"
+                      ? "bg-red-50 text-red-700 border-red-200"
+                      : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                  }`}
+                >
+                  {result.prediction}
+                </span>
               </div>
+            )}
+          </div>
 
-              <div className="rounded border border-[#0d2a45] overflow-hidden">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#091729] text-hud-cyan uppercase border-b border-[#0d2a45]">
-                    <tr>
-                      <th className="px-4 py-2.5">TARGET</th>
-                      <th className="px-4 py-2.5">VERDICT</th>
-                      <th className="px-4 py-2.5">CONFIDENCE</th>
-                      <th className="px-4 py-2.5">P(SYNTHETIC)</th>
-                      <th className="px-4 py-2.5">P(AUTHENTIC)</th>
-                      <th className="px-4 py-2.5">SPATIAL BOX (X, Y, W, H)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#0d2a45] bg-[#050c18]">
-                    {result.faces.map((f, i) => (
-                      <tr key={f.face_index} className="hover:bg-[#0a1b2e]">
-                        <td className="px-4 py-2.5 font-bold text-white">#0{i + 1}</td>
-                        <td className="px-4 py-2.5">
-                          <span
-                            className={`font-black tracking-wider ${
-                              f.predicted_label === "FAKE" ? "text-hud-amber" : "text-hud-green"
-                            }`}
-                          >
-                            {f.predicted_label}
-                          </span>
-                        </td>
-                        <td className="px-4 py-2.5 text-slate-300">{(f.confidence * 100).toFixed(1)}%</td>
-                        <td className="px-4 py-2.5 text-hud-amber font-bold">
-                          {(f.fake_probability * 100).toFixed(1)}%
-                        </td>
-                        <td className="px-4 py-2.5 text-hud-green font-bold">
-                          {(f.real_probability * 100).toFixed(1)}%
-                        </td>
-                        <td className="px-4 py-2.5 text-slate-400 text-[11px]">
-                          [{f.bbox.x}, {f.bbox.y}, {f.bbox.w}, {f.bbox.h}]
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Center Image Container with Percentage-Accurate In-Image Bounding Boxes */}
+            <div className="lg:col-span-8 bg-slate-100 border border-slate-200 rounded-xl p-4 flex items-center justify-center min-h-[380px] overflow-hidden">
+              <div className="relative inline-block max-w-full max-h-[460px]">
+                {previewUrl && (
+                  <img
+                    src={previewUrl}
+                    alt="Target preview"
+                    onLoad={(e) => {
+                      setImgNaturalSize({
+                        width: e.currentTarget.naturalWidth,
+                        height: e.currentTarget.naturalHeight,
+                      });
+                    }}
+                    className="max-h-[440px] w-auto max-w-full object-contain block mx-auto rounded shadow-sm"
+                  />
+                )}
+
+                {/* Direct In-Image Overlays */}
+                {result &&
+                  imgNaturalSize.width > 0 &&
+                  result.faces.map((f: FacePrediction) => {
+                    const isFake = f.predicted_label === "FAKE" || f.fake_probability >= 0.5;
+                    const leftPct = (f.bbox.x / imgNaturalSize.width) * 100;
+                    const topPct = (f.bbox.y / imgNaturalSize.height) * 100;
+                    const widthPct = (f.bbox.w / imgNaturalSize.width) * 100;
+                    const heightPct = (f.bbox.h / imgNaturalSize.height) * 100;
+
+                    return (
+                      <div
+                        key={f.face_index}
+                        className={`absolute border-2 transition-all rounded font-mono ${
+                          isFake
+                            ? "border-red-500 bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.5)]"
+                            : "border-emerald-500 bg-emerald-500/10 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                        }`}
+                        style={{
+                          left: `${leftPct}%`,
+                          top: `${topPct}%`,
+                          width: `${widthPct}%`,
+                          height: `${heightPct}%`,
+                        }}
+                      >
+                        {/* In-Image Tag */}
+                        <div
+                          className={`absolute -top-7 left-0 px-2 py-0.5 rounded text-[11px] font-bold text-white shadow-sm flex items-center gap-1 ${
+                            isFake ? "bg-red-600" : "bg-emerald-600"
+                          }`}
+                        >
+                          <span>{f.predicted_label}</span>
+                          <span>{(f.confidence * 100).toFixed(1)}%</span>
+                        </div>
+                      </div>
+                    );
+                  })}
               </div>
             </div>
-          )}
+
+            {/* Metrics Breakdown Sidebar */}
+            <div className="lg:col-span-4 space-y-4">
+              {result ? (
+                <>
+                  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3">
+                    <h3 className="font-bold text-sm text-slate-800">
+                      Overall Assessment
+                    </h3>
+
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-slate-600">Model Used</span>
+                      <span className="font-mono font-semibold text-slate-900">
+                        {result.model_name}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-slate-600">Faces Detected</span>
+                      <span className="font-mono font-semibold text-slate-900">
+                        {result.faces_detected_count}
+                      </span>
+                    </div>
+
+                    <div className="space-y-1 pt-2 border-t border-slate-200 text-xs">
+                      <div className="flex justify-between font-medium">
+                        <span className="text-slate-600">Fake Probability</span>
+                        <span className="font-bold text-red-600">
+                          {(result.fake_probability * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden flex">
+                        <div
+                          className="bg-red-500"
+                          style={{ width: `${result.fake_probability * 100}%` }}
+                        />
+                        <div
+                          className="bg-emerald-500"
+                          style={{ width: `${result.real_probability * 100}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-[11px] text-slate-400">
+                        <span>Fake: {(result.fake_probability * 100).toFixed(1)}%</span>
+                        <span>Real: {(result.real_probability * 100).toFixed(1)}%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {result.faces.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                        Localized Face Regions
+                      </h4>
+                      {result.faces.map((f) => (
+                        <div
+                          key={f.face_index}
+                          className="p-3 rounded-lg border border-slate-200 bg-white text-xs space-y-1"
+                        >
+                          <div className="flex justify-between font-semibold">
+                            <span>Face #{f.face_index + 1}</span>
+                            <span
+                              className={
+                                f.predicted_label === "FAKE" ? "text-red-600" : "text-emerald-600"
+                              }
+                            >
+                              {f.predicted_label} ({(f.confidence * 100).toFixed(1)}%)
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-slate-500">
+                            BBox: [{f.bbox.x}, {f.bbox.y}, {f.bbox.w}, {f.bbox.h}]
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <DisclaimerAlert />
+                </>
+              ) : (
+                <div className="p-6 rounded-xl border border-dashed border-slate-200 text-center text-slate-400 text-sm">
+                  Click &ldquo;Run Forensic Analysis&rdquo; to process this image.
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
-
-      <DisclaimerAlert />
     </div>
   );
 }

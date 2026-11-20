@@ -44,7 +44,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
   };
 
   return (
-    <div className="w-full font-mono">
+    <div className="w-full">
       <input
         ref={inputRef}
         type="file"
@@ -55,25 +55,25 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
       />
 
       {selectedFile ? (
-        <div className="p-3.5 rounded bg-[#071322] border border-hud-cyan/50 flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded bg-[#0b1d30] text-hud-cyan border border-hud-cyan/40 glow-cyan">
+            <div className="p-2.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200">
               {accept === "image" ? <FileImage className="w-5 h-5" /> : <FileVideo className="w-5 h-5" />}
             </div>
             <div>
-              <div className="font-bold text-xs text-white truncate max-w-xs sm:max-w-md">
+              <p className="text-sm font-semibold text-slate-800 truncate max-w-xs sm:max-w-md">
                 {selectedFile.name}
-              </div>
-              <div className="text-[10px] text-hud-cyan/80 mt-0.5">
-                {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB &bull; {selectedFile.type || accept}
-              </div>
+              </p>
+              <p className="text-xs text-slate-500">
+                {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB &bull; Ready for inference
+              </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClear}
             disabled={disabled}
-            className="p-1.5 rounded text-slate-400 hover:text-hud-amber hover:bg-[#1a0f08] transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-lg transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -87,25 +87,25 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
           onClick={() => !disabled && inputRef.current?.click()}
-          className={`border-2 border-dashed rounded p-6 sm:p-8 text-center cursor-pointer transition-all ${
-            disabled
-              ? "opacity-50 cursor-not-allowed border-[#0d2a45] bg-[#050c18]"
-              : isDragging
-              ? "border-hud-cyan bg-[#07192d] shadow-[0_0_15px_rgba(0,240,255,0.3)]"
-              : "border-[#0e2c49] bg-[#050c18] hover:border-hud-cyan/60 hover:bg-[#071322]"
-          }`}
+          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
+            isDragging
+              ? "border-blue-500 bg-blue-50/50"
+              : "border-slate-300 hover:border-blue-400 hover:bg-slate-50/50"
+          } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
         >
-          <div className="flex flex-col items-center gap-2">
-            <div className="p-3 rounded-full bg-[#081525] border border-[#103254] text-hud-cyan">
-              <UploadCloud className="w-6 h-6 animate-pulse" />
+          <div className="flex flex-col items-center justify-center space-y-3">
+            <div className="p-3 bg-blue-50 text-blue-600 rounded-full border border-blue-100">
+              <UploadCloud className="w-6 h-6" />
             </div>
-            <div className="text-xs font-bold text-white tracking-wider uppercase mt-1">
-              CLICK OR DROP {accept === "image" ? "FACIAL IMAGE" : "VIDEO STREAM"} HERE
-            </div>
-            <div className="text-[10px] text-slate-400 tracking-wider">
-              {accept === "image"
-                ? "JPG, PNG, WEBP (MIN 128x128 PX)"
-                : "MP4, AVI, MOV (MAX 100MB)"}
+            <div>
+              <p className="text-sm font-semibold text-slate-800">
+                Click to upload or drag & drop
+              </p>
+              <p className="text-xs text-slate-500 mt-1">
+                {accept === "image"
+                  ? "JPG, PNG, or JPEG (Max 15 MB)"
+                  : "MP4, MOV, or AVI (Max 150 MB)"}
+              </p>
             </div>
           </div>
         </div>

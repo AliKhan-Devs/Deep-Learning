@@ -32,14 +32,14 @@ class Settings:
     FACE_CROP_MARGIN: float = 0.25           # 25% boundary expansion for context
 
     # Decision Thresholds & Aggregation Strategy
-    DEFAULT_MODEL: str = "efficientnet_b0"
+    DEFAULT_MODEL: str = "efficientnet_b4"
     DEFAULT_DECISION_THRESHOLD: float = 0.50
     AGGREGATION_METHOD: str = "trimmed_mean" # "trimmed_mean", "mean", or "suspicious_ratio"
     SUSPICIOUS_FRAME_THRESHOLD: float = 0.65 # Frame considered suspicious if P(FAKE) >= 0.65
     SUSPICIOUS_RATIO_TRIGGER: float = 0.25   # Video flagged if >= 25% valid frames are suspicious
 
     # Supported model architectures
-    SUPPORTED_MODELS: List[str] = ["efficientnet_b0", "xception"]
+    SUPPORTED_MODELS: List[str] = ["efficientnet_b4", "efficientnet_b0", "xception"]
 
     def ensure_directories(self) -> None:
         """Create necessary storage directories if they do not exist."""

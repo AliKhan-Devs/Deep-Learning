@@ -123,3 +123,50 @@ export interface HistoryResponse {
   manipulated_count: number;
   authentic_count: number;
 }
+
+export interface ModelBenchmarkItem {
+  model_name: string;
+  display_name: string;
+  architecture: string;
+  input_size: [number, number];
+  weights_size_mb: number;
+  test_accuracy: number;
+  macro_precision: number;
+  macro_recall: number;
+  macro_f1: number;
+  roc_auc: number;
+  fake_recall: number;
+  real_precision: number;
+  val_loss_min: number;
+  total_test_samples: number;
+  false_positives: number;
+  false_negatives: number;
+  metrics_image_url: string;
+  roc_image_url: string;
+  is_champion: boolean;
+  summary: string;
+}
+
+export interface ModelInferenceComparisonItem {
+  model_name: string;
+  display_name: string;
+  architecture: string;
+  is_champion: boolean;
+  latency_ms: number;
+  fps: number;
+  prediction: string;
+  fake_probability: number;
+  real_probability: number;
+  confidence: number;
+  face_detected: boolean;
+  faces_count: number;
+}
+
+export interface MultiModelComparisonResponse {
+  analysis_id: string;
+  created_at: string;
+  original_filename: string;
+  faces_detected_count: number;
+  champion_model: string;
+  models: ModelInferenceComparisonItem[];
+}

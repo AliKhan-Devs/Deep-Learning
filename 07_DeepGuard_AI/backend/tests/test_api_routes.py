@@ -36,10 +36,71 @@ def test_list_models_endpoint():
     res = client.get("/api/v1/models")
     assert res.status_code == 200
     models = res.json()
-    assert len(models) >= 2
+    assert len(models) >= 3
     model_names = [m["model_name"] for m in models]
+    assert "efficientnet_b4" in model_names
     assert "efficientnet_b0" in model_names
     assert "xception" in model_names
+
+
+def test_benchmarks_endpoint():
+    """Verifies the benchmarks endpoint returns 3 experimental runs."""
+    res = client.get("/api/v1/models/benchmarks")
+    assert res.status_code == 200
+    benchmarks = res.json()
+    assert len(benchmarks) == 3
+    names = [b["model_name"] for b in benchmarks]
+    assert "efficientnet_b4" in names
+    assert "xception" in names
+    assert "efficientnet_b0" in names
+
+    champion = [b for b in benchmarks if b["is_champion"]][0]
+    assert champion["model_name"] == "efficientnet_b4"
+    assert champion["test_accuracy"] == 0.97
+    assert champion["roc_auc"] == 0.9968
+
+
+def test_compare_models_endpoint(monkeypatch):
+    """Verifies multi-model comparison route."""
+    class DummyModel(nn.Module):
+        def forward(self, x):
+            batch_size = x.size(0)
+            return torch.tensor([[1.0, 3.5]], dtype=torch.float32).repeat(batch_size, 1)
+
+    mock_config = {
+        "model_name": "dummy",
+        "display_name": "Dummy Model",
+        "architecture": "dummy",
+        "input_size": [224, 224],
+        "mean": [0.485, 0.456, 0.406],
+        "std": [0.229, 0.224, 0.225],
+        "decision_threshold": 0.50
+    }
+
+    monkeypatch.setattr(
+        model_manager,
+        "get_model",
+        lambda name: (DummyModel(), {**mock_config, "model_name": name, "display_name": f"{name} Display"})
+    )
+
+    img = Image.new("RGB", (200, 200), color="green")
+    img_bytes = io.BytesIO()
+    img.save(img_bytes, format="JPEG")
+    img_bytes.seek(0)
+
+    res = client.post(
+        "/api/v1/analysis/compare",
+        files={"file": ("test_compare.jpg", img_bytes, "image/jpeg")}
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["champion_model"] == "efficientnet_b4"
+    assert len(data["models"]) == 3
+    for m in data["models"]:
+        assert "latency_ms" in m
+        assert "fps" in m
+        assert "prediction" in m
+
 
 
 def test_invalid_image_extension_rejected():

@@ -1,29 +1,35 @@
 import React from "react";
 import Link from "next/link";
-import { Shield, Github, BookOpen, Terminal } from "lucide-react";
+import { ShieldAlert, Github, BookOpen, Layers, BarChart3 } from "lucide-react";
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="border-t border-[#0d2a45] bg-[#040811] mt-20 py-8 text-xs font-mono text-slate-400">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Terminal className="w-4 h-4 text-hud-cyan" />
-          <span className="tracking-wider uppercase">
-            DEEPGUARD AI &bull; DEEP LEARNING & COMPUTER VISION FORENSICS &bull; PORTFOLIO SPEC
-          </span>
+    <footer className="border-t border-slate-200 bg-white mt-16 py-8 text-sm text-slate-500">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <ShieldAlert className="w-4 h-4 text-blue-600" />
+          <span className="font-semibold text-slate-800">DeepGuard AI</span>
+          <span>&bull;</span>
+          <span>Multi-Model Deepfake Detection Architecture</span>
         </div>
 
-        <div className="flex items-center gap-6">
-          <Link href="/models" className="hover:text-hud-cyan transition-colors flex items-center gap-1.5 uppercase">
-            <BookOpen className="w-3.5 h-3.5 text-hud-cyan" /> COLAB TRAINING MATRIX
+        <div className="flex items-center gap-6 text-sm">
+          <Link href="/arena" className="hover:text-blue-600 transition-colors flex items-center gap-1.5">
+            <Layers className="w-4 h-4 text-slate-400" /> 3-Model Arena
+          </Link>
+          <Link href="/benchmarks" className="hover:text-blue-600 transition-colors flex items-center gap-1.5">
+            <BarChart3 className="w-4 h-4 text-slate-400" /> Benchmarks
+          </Link>
+          <Link href="/models" className="hover:text-blue-600 transition-colors flex items-center gap-1.5">
+            <BookOpen className="w-4 h-4 text-slate-400" /> Models
           </Link>
           <a
             href="https://github.com/AliKhan-Devs/Deep-Learning"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-hud-cyan transition-colors flex items-center gap-1.5 uppercase"
+            className="hover:text-blue-600 transition-colors flex items-center gap-1.5"
           >
-            <Github className="w-3.5 h-3.5 text-hud-cyan" /> GITHUB REMOTE
+            <Github className="w-4 h-4 text-slate-400" /> GitHub Repository
           </a>
         </div>
       </div>

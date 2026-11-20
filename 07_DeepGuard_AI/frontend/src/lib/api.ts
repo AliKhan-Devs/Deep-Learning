@@ -3,7 +3,9 @@ import {
   VideoAnalysisResponse,
   ModelInfo,
   SystemStatus,
-  HistoryResponse
+  HistoryResponse,
+  ModelBenchmarkItem,
+  MultiModelComparisonResponse,
 } from "./types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
@@ -50,6 +52,18 @@ export const api = {
   getSystemStatus: () => request<SystemStatus>("/system/status"),
 
   getModels: () => request<ModelInfo[]>("/models"),
+
+  getBenchmarks: () => request<ModelBenchmarkItem[]>("/models/benchmarks"),
+
+  compareModels: async (file: File): Promise<MultiModelComparisonResponse> => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    return request<MultiModelComparisonResponse>("/analysis/compare", {
+      method: "POST",
+      body: formData,
+    });
+  },
 
   analyzeImage: async (file: File, modelName: string): Promise<ImageAnalysisResponse> => {
     const formData = new FormData();
