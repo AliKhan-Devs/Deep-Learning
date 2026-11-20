@@ -9,7 +9,7 @@
 [![XAI](https://img.shields.io/badge/XAI-Grad--CAM%20%2B%20Grad--CAM%2B%2B-purple)](https://arxiv.org/abs/1610.02391)
 [![Tests](https://img.shields.io/badge/Tests-17%20Passed-brightgreen)](https://pytest.org/)
 
-![Test image of brain tumor detection](./assets/test_image.png)
+![Test image of brain tumor detection](./assets/test_image_2.png)
 
 **NeuroScan XAI** is an interpretable clinical computer vision system for **multi-class brain tumor classification, weakly-supervised lesion localization, and diagnostic uncertainty quantification** from magnetic resonance imaging (MRI) scans. Engineered for high-stakes medical diagnosis where uninterpretable "black-box" models are unacceptable, it pairs high-capacity feature extraction (**DenseNet-121**, achieving **95.56% test accuracy**) with native **Grad-CAM**, **Grad-CAM++**, and **Shannon Softmax Entropy** clinical safety triage.
 
