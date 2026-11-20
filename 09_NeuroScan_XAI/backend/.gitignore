@@ -1,0 +1,10 @@
+# NeuroScan XAI Backend Git Ignore
+__pycache__/
+*.py[cod]
+*.db
+*.sqlite3
+storage/*.db
+storage/*.sqlite3
+!storage/.gitkeep
+.pytest_cache/
+.coverage

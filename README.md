@@ -92,7 +92,7 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 * [x] Face Mask Detection
 * [x] DeepGuard AI – Deepfake Image & Video Detection System
 * [x] VisionAttend AI – Biometric Facial Attendance & Analytics System
-* [ ] NeuroScan XAI – Explainable Medical Brain MRI Diagnosis System
+* [x] NeuroScan XAI – Explainable Medical Brain MRI Diagnosis System
 * [ ] Fire & Smoke Detection
 * [ ] Weapon Detection
 * [ ] GuardianGrid AI Surveillance Platform
@@ -111,7 +111,7 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 | 06 | Face Mask Detection (YOLO)                                 | ✅ Completed   |
 | 07 | DeepGuard AI – Deepfake Detection System                   | ✅ Completed   |
 | 08 | VisionAttend AI – Biometric Facial Attendance & Analytics  | ✅ Completed   |
-| 09 | NeuroScan XAI – Explainable Brain MRI Tumor Diagnosis      | 🔄 In Training|
+| 09 | NeuroScan XAI – Explainable Brain MRI Tumor Diagnosis      | ✅ Completed   |
 | 10 | Fire & Smoke Detection (YOLO)                              | ⏳ Upcoming    |
 | 11 | Weapon Detection (YOLO)                                    | ⏳ Upcoming    |
 | 12 | GuardianGrid – AI Surveillance System                      | ⏳ Upcoming    |

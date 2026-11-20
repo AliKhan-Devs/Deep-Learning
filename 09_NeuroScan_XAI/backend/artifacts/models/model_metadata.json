@@ -1,0 +1,33 @@
+{
+  "project": "NeuroScan XAI",
+  "architecture": "DenseNet-121",
+  "num_classes": 4,
+  "classes": [
+    "glioma",
+    "meningioma",
+    "notumor",
+    "pituitary"
+  ],
+  "input_resolution": [
+    224,
+    224
+  ],
+  "normalization": {
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  },
+  "best_validation_accuracy": 0.955625,
+  "entropy_thresholds": {
+    "confident_max": 0.4,
+    "uncertain_min": 0.85
+  },
+  "target_layer_hook": "features.denseblock4"
+}
