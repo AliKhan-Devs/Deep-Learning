@@ -17,6 +17,7 @@ export interface ImageDetectionResult {
   compliance_rate: number;
   status: "COMPLIANT" | "WARNING_NON_COMPLIANT";
   inference_time_ms: number;
+  fps?: number;
   detections: DetectionBox[];
   annotated_image: string; // base64 data URI
 }
@@ -51,6 +52,15 @@ export interface VideoDetectionResult {
   timeline: VideoTimelinePoint[];
   violation_keyframes: VideoViolationKeyframe[];
   output_video_path?: string;
+  video_url?: string;
+}
+
+export interface MultiModelComparisonItem extends ImageDetectionResult {
+  fps: number;
+}
+
+export interface MultiModelComparisonResult {
+  results: MultiModelComparisonItem[];
 }
 
 export interface ModelInfo {

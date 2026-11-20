@@ -13,8 +13,9 @@
   <img src="https://img.shields.io/badge/YOLO-v26s%20Champion-emerald?style=for-the-badge&logo=yolo" alt="YOLOv26s" />
   <img src="https://img.shields.io/badge/mAP50--95-55.85%25-cyan?style=for-the-badge" alt="mAP50-95" />
   <img src="https://img.shields.io/badge/FastAPI-Backend%20v2.0-blue?style=for-the-badge&logo=fastapi" alt="FastAPI" />
-  <img src="https://img.shields.io/badge/Next.js%2014-PACS%20Dark%20HUD-black?style=for-the-badge&logo=next.js" alt="Next.js" />
-  <img src="https://img.shields.io/badge/Tests-10%2F10%20Passing-success?style=for-the-badge" alt="Tests" />
+  <img src="https://img.shields.io/badge/Next.js%2014-Light%20Clean%20UI-white?style=for-the-badge&logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Arena-3--Model%20Live%20FPS-purple?style=for-the-badge" alt="Live Arena" />
+  <img src="https://img.shields.io/badge/Tests-11%2F11%20Passing-success?style=for-the-badge" alt="Tests" />
 </p>
 
 ---
@@ -205,25 +206,25 @@ flowchart TD
 │   │   ├── test_api.py
 │   │   └── test_detector.py
 │   └── pytest.ini
-├── frontend/                               # Next.js 14 Workstation UI
+├── frontend/                               # Next.js 14 Workstation UI (Light Theme)
 │   ├── src/
 │   │   ├── app/
+│   │   │   ├── arena/page.tsx              # 3-Model Live Arena (Side-by-Side FPS)
 │   │   │   ├── experiments/page.tsx        # Comparative Analysis page
 │   │   │   ├── layout.tsx
-│   │   │   └── page.tsx                    # Main Live Detector page
+│   │   │   └── page.tsx                    # Main Live & Upload In-Video Detector
 │   │   ├── components/
-│   │   │   ├── DetectionViewer.tsx         # Annotated preview & box inspector
 │   │   │   ├── Header.tsx                  # Navigation & telemetry badge
 │   │   │   ├── ModelSelector.tsx           # V1/V2/V3 & threshold sliders
 │   │   │   ├── StatsCards.tsx              # Compliance gauge & counters
-│   │   │   ├── UploadImageTab.tsx          # Drag & drop + 1-click samples
-│   │   │   ├── UploadVideoTab.tsx          # Video timeline & incident filmstrip
-│   │   │   └── WebcamScanner.tsx           # Real-time webcam HUD scanner
+│   │   │   ├── UploadImageTab.tsx          # Drag & drop + in-place detection
+│   │   │   ├── UploadVideoTab.tsx          # In-video detection & timeline
+│   │   │   └── WebcamScanner.tsx           # Real-time in-video HUD scanner
 │   │   ├── lib/
 │   │   │   ├── api.ts                      # Typed client SDK
 │   │   │   └── types.ts                    # TypeScript interfaces
 │   │   └── styles/
-│   │       └── globals.css                 # Dark HUD & scanline styling
+│   │       └── globals.css                 # Clean light theme styling
 │   ├── package.json
 │   ├── tailwind.config.js
 │   └── tsconfig.json
@@ -312,8 +313,10 @@ tests/test_detector.py::test_detector_sample_inference PASSED            [100%]
 | `GET` | `/api/v1/experiments/comparison` | Detailed 3-experiment metrics | None | Benchmark matrix |
 | `GET` | `/api/v1/detect/samples` | List bundled test validation images | None | Array of sample images |
 | `POST` | `/api/v1/detect/image` | Run YOLO inference on image | Multipart file or base64 | BBoxes, counts, annotated image |
-| `POST` | `/api/v1/detect/frame` | Ultra-fast webcam frame inference | JSON with `frame_base64` | Real-time detections & latency |
-| `POST` | `/api/v1/detect/video` | Video temporal safety audit | Multipart video file | Timeline & violation keyframes |
+| `POST` | `/api/v1/detect/frame` | Ultra-fast webcam frame inference | JSON with `frame_base64` | Real-time in-video detections & latency |
+| `POST` | `/api/v1/detect/video` | Video temporal safety audit | Multipart video file | Timeline & in-video stream |
+| `POST` | `/api/v1/detect/compare-all` | Run all 3 models on image | Multipart file or base64 | Array of 3 model outputs with FPS |
+| `POST` | `/api/v1/detect/compare-frame` | Real-time webcam frame across 3 models | JSON with `frame_base64` | Real-time 3-model detections & live FPS |
 
 ---
 

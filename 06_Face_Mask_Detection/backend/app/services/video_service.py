@@ -108,7 +108,8 @@ class VideoDetectionService:
             "has_violations": (total_no_mask_detections > 0),
             "timeline": timeline_data[::max(1, len(timeline_data) // 40)],  # Downsample for frontend graph
             "violation_keyframes": violation_keyframes,
-            "output_video_path": output_path
+            "output_video_path": output_path,
+            "video_url": f"/temp_videos/{output_filename}"
         }
 
 video_detection_service = VideoDetectionService()

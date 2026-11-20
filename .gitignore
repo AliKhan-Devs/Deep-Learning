@@ -2,6 +2,8 @@
 dataset/
 /data
 /runs
+temp/
+**/backend/temp/
 
 
 # Byte-compiled / optimized / DLL files

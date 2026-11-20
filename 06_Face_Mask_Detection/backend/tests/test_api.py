@@ -59,3 +59,23 @@ def test_detect_image_upload():
         assert "annotated_image" in data
         assert "compliance_rate" in data
         assert data["model_used"] == "v3"
+
+def test_compare_all_models():
+    sample_file = "06_Face_Mask_Detection/backend/samples/01_sample_crowd_compliance.jpg"
+    if os.path.exists(sample_file):
+        with open(sample_file, "rb") as f:
+            file_bytes = f.read()
+        resp = client.post(
+            "/api/v1/detect/compare-all",
+            files={"file": ("test.jpg", io.BytesIO(file_bytes), "image/jpeg")},
+            data={"conf_threshold": "0.35"}
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "results" in data
+        assert len(data["results"]) == 3
+        # Check that FPS and latency are present in each model's result
+        for m_res in data["results"]:
+            assert "fps" in m_res
+            assert "inference_time_ms" in m_res
+            assert "annotated_image" in m_res

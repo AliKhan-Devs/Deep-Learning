@@ -31,6 +31,10 @@ samples_dir = os.path.join(settings.PROJECT_DIR, "backend", "samples")
 os.makedirs(samples_dir, exist_ok=True)
 app.mount("/api/v1/detect/samples", StaticFiles(directory=samples_dir), name="samples")
 
+temp_dir = settings.TEMP_DIR
+os.makedirs(temp_dir, exist_ok=True)
+app.mount("/temp_videos", StaticFiles(directory=temp_dir), name="temp_videos")
+
 runs_dir = str(settings.RUNS_DIR)
 if os.path.exists(runs_dir):
     app.mount("/assets/runs", StaticFiles(directory=runs_dir), name="runs_assets")

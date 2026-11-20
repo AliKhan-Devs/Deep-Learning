@@ -24,48 +24,46 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   onChangeIou,
 }) => {
   return (
-    <div className="bg-surface rounded-2xl border border-surface-light p-4 shadow-xl">
+    <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-          <Sliders className="w-3.5 h-3.5 text-cyan-400" /> Model Engine & Thresholds
+        <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+          <Sliders className="w-3.5 h-3.5 text-sky-600" /> Active Model Engine & Sensitivity
         </h3>
-        <span className="text-[11px] text-cyan-400 font-mono">
-          Model: {selectedModel.toUpperCase()}
+        <span className="text-[11px] font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200">
+          Selected: {selectedModel.toUpperCase()}
         </span>
       </div>
 
       {/* Model Selection Tabs */}
-      <div className="grid grid-cols-3 gap-2 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-3.5">
         {models.map((m) => {
           const isSelected = m.id === selectedModel;
           return (
             <button
               key={m.id}
               onClick={() => onSelectModel(m.id)}
-              className={`p-2.5 rounded-xl border text-left transition-all relative overflow-hidden ${
+              className={`p-3 rounded-xl border text-left transition-all relative ${
                 isSelected
-                  ? "bg-cyan-500/15 border-cyan-500/50 shadow-md shadow-cyan-500/10 text-white"
-                  : "bg-surface-light/40 border-surface-light text-slate-400 hover:text-slate-200 hover:bg-surface-light"
+                  ? "bg-sky-50/70 border-sky-400 shadow-sm"
+                  : "bg-slate-50 border-slate-200 hover:bg-slate-100"
               }`}
             >
               {m.is_champion && (
-                <div className="absolute top-1.5 right-1.5">
-                  <span className="p-0.5 rounded bg-emerald-500/20 text-emerald-400 flex items-center gap-0.5 text-[9px] font-bold px-1.5">
-                    <Award className="w-2.5 h-2.5" /> CHAMPION
-                  </span>
-                </div>
+                <span className="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-0.5">
+                  <Award className="w-2.5 h-2.5 text-emerald-600" /> CHAMPION
+                </span>
               )}
-              <div className="flex items-center gap-1.5 font-semibold text-xs mb-0.5">
+              <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900 mb-0.5">
                 {m.id === "v3" ? (
-                  <Sparkles className="w-3 h-3 text-emerald-400" />
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                 ) : (
-                  <Zap className="w-3 h-3 text-cyan-400" />
+                  <Zap className="w-3.5 h-3.5 text-sky-600" />
                 )}
                 {m.name.split(" ")[0]}
               </div>
-              <div className="text-[10px] text-slate-400 flex items-center justify-between">
+              <div className="text-[11px] text-slate-500 flex items-center justify-between mt-1">
                 <span>mAP50-95:</span>
-                <span className="font-mono font-medium text-white">
+                <span className="font-mono font-bold text-slate-800">
                   {(m.mAP50_95 * 100).toFixed(1)}%
                 </span>
               </div>
@@ -74,12 +72,12 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         })}
       </div>
 
-      {/* Threshold Sliders */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-surface-light/60">
+      {/* Sliders */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-slate-100 text-xs">
         <div>
-          <div className="flex justify-between text-xs mb-1.5">
-            <span className="text-slate-300 font-medium">Confidence Filter</span>
-            <span className="text-cyan-400 font-mono font-semibold">
+          <div className="flex justify-between mb-1">
+            <span className="text-slate-700 font-medium">Confidence Threshold</span>
+            <span className="text-sky-700 font-mono font-bold">
               {(confThreshold * 100).toFixed(0)}%
             </span>
           </div>
@@ -90,17 +88,14 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
             step="0.05"
             value={confThreshold}
             onChange={(e) => onChangeConf(parseFloat(e.target.value))}
-            className="w-full h-1.5 bg-surface-light rounded-lg appearance-none cursor-pointer accent-cyan-400"
+            className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
           />
-          <p className="text-[10px] text-slate-500 mt-1">
-            Higher values reject faint ambiguous detections; lower values capture distant faces.
-          </p>
         </div>
 
         <div>
-          <div className="flex justify-between text-xs mb-1.5">
-            <span className="text-slate-300 font-medium">NMS IoU Threshold</span>
-            <span className="text-cyan-400 font-mono font-semibold">
+          <div className="flex justify-between mb-1">
+            <span className="text-slate-700 font-medium">IoU Overlap Threshold</span>
+            <span className="text-sky-700 font-mono font-bold">
               {(iouThreshold * 100).toFixed(0)}%
             </span>
           </div>
@@ -111,11 +106,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
             step="0.05"
             value={iouThreshold}
             onChange={(e) => onChangeIou(parseFloat(e.target.value))}
-            className="w-full h-1.5 bg-surface-light rounded-lg appearance-none cursor-pointer accent-cyan-400"
+            className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
           />
-          <p className="text-[10px] text-slate-500 mt-1">
-            Non-Maximum Suppression threshold to merge overlapping boxes.
-          </p>
         </div>
       </div>
     </div>

@@ -16,6 +16,11 @@ class FrameRequest(BaseModel):
     iou_threshold: Optional[float] = 0.50
     model_id: Optional[str] = "v3"
 
+class CompareFrameRequest(BaseModel):
+    frame_base64: str
+    conf_threshold: Optional[float] = 0.45
+    iou_threshold: Optional[float] = 0.50
+
 @router.post("/image")
 async def detect_image_endpoint(
     file: Optional[UploadFile] = File(None),
@@ -93,6 +98,67 @@ async def detect_video_endpoint(
         return res
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Video analysis error: {str(e)}")
+
+@router.post("/compare-all")
+async def compare_all_models_endpoint(
+    file: Optional[UploadFile] = File(None),
+    image_base64: Optional[str] = Form(None),
+    conf_threshold: float = Form(0.45),
+    iou_threshold: float = Form(0.50)
+):
+    """Run all 3 models (v1, v2, v3) on the exact same image and return side-by-side metrics with FPS."""
+    try:
+        if file is not None:
+            image_bytes = await file.read()
+        elif image_base64:
+            if "," in image_base64:
+                image_base64 = image_base64.split(",", 1)[1]
+            image_bytes = base64.b64decode(image_base64)
+        else:
+            raise HTTPException(status_code=400, detail="Must provide either an uploaded file or image_base64 string.")
+
+        results = []
+        for mid in ["v1", "v2", "v3"]:
+            res = detector_service.detect_image(
+                image_bytes=image_bytes,
+                conf_threshold=conf_threshold,
+                iou_threshold=iou_threshold,
+                model_id=mid
+            )
+            ms = res["inference_time_ms"]
+            fps = round(1000.0 / ms, 1) if ms > 0 else 0
+            res["fps"] = fps
+            results.append(res)
+
+        return {"results": results}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Comparison error: {str(e)}")
+
+@router.post("/compare-frame")
+async def compare_frame_endpoint(req: CompareFrameRequest):
+    """Real-time webcam comparison endpoint running all 3 models on a live frame with live FPS."""
+    try:
+        raw_b64 = req.frame_base64
+        if "," in raw_b64:
+            raw_b64 = raw_b64.split(",", 1)[1]
+        image_bytes = base64.b64decode(raw_b64)
+
+        results = []
+        for mid in ["v1", "v2", "v3"]:
+            res = detector_service.detect_image(
+                image_bytes=image_bytes,
+                conf_threshold=req.conf_threshold or 0.45,
+                iou_threshold=req.iou_threshold or 0.50,
+                model_id=mid
+            )
+            ms = res["inference_time_ms"]
+            fps = round(1000.0 / ms, 1) if ms > 0 else 0
+            res["fps"] = fps
+            results.append(res)
+
+        return {"results": results}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Frame comparison error: {str(e)}")
 
 @router.get("/samples")
 def list_sample_images():

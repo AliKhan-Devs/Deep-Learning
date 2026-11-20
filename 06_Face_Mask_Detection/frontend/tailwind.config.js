@@ -8,13 +8,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "#080c14",
-        surface: "#0f172a",
-        "surface-light": "#1e293b",
-        accent: "#06b6d4",
-        "accent-glow": "rgba(6, 182, 212, 0.2)",
-        compliant: "#10b981",
-        violation: "#ef4444",
+        background: "#f8fafc",
+        surface: "#ffffff",
+        "surface-muted": "#f1f5f9",
+        border: "#e2e8f0",
+        primary: "#0284c7",
+        "primary-hover": "#0369a1",
+        compliant: "#059669",
+        "compliant-bg": "#ecfdf5",
+        violation: "#dc2626",
+        "violation-bg": "#fef2f2",
       },
     },
   },

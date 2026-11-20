@@ -4,7 +4,8 @@ import {
   SystemStatus,
   ModelInfo,
   SampleImage,
-  ExperimentMetricItem
+  ExperimentMetricItem,
+  MultiModelComparisonResult,
 } from "./types";
 
 const BACKEND_BASE = "http://127.0.0.1:8003/api/v1";
@@ -108,6 +109,55 @@ export async function detectVideoUpload(
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: "Video detection failed" }));
     throw new Error(err.detail || "Video detection failed");
+  }
+  return res.json();
+}
+
+export async function compareAllModels(
+  file?: File,
+  imageBase64?: string,
+  confThreshold: number = 0.45,
+  iouThreshold: number = 0.50
+): Promise<MultiModelComparisonResult> {
+  const formData = new FormData();
+  if (file) {
+    formData.append("file", file);
+  }
+  if (imageBase64) {
+    formData.append("image_base64", imageBase64);
+  }
+  formData.append("conf_threshold", confThreshold.toString());
+  formData.append("iou_threshold", iouThreshold.toString());
+
+  const res = await fetch(`${BACKEND_BASE}/detect/compare-all`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: "Multi-model comparison failed" }));
+    throw new Error(err.detail || "Multi-model comparison failed");
+  }
+  return res.json();
+}
+
+export async function compareWebcamFrame(
+  frameBase64: string,
+  confThreshold: number = 0.45,
+  iouThreshold: number = 0.50
+): Promise<MultiModelComparisonResult> {
+  const res = await fetch(`${BACKEND_BASE}/detect/compare-frame`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      frame_base64: frameBase64,
+      conf_threshold: confThreshold,
+      iou_threshold: iouThreshold,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Webcam comparison inference failed");
   }
   return res.json();
 }

@@ -1,20 +1,18 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { Camera, VideoOff, RefreshCw, Sparkles, AlertCircle, Play, Square } from "lucide-react";
+import { Camera, VideoOff, Play, Square, Sparkles, AlertTriangle, CheckCircle2, RefreshCw } from "lucide-react";
 import { detectWebcamFrame } from "../lib/api";
 import { ImageDetectionResult } from "../lib/types";
 
 interface WebcamScannerProps {
   modelId: string;
   confThreshold: number;
-  onResult: (res: ImageDetectionResult) => void;
 }
 
 export const WebcamScanner: React.FC<WebcamScannerProps> = ({
   modelId,
   confThreshold,
-  onResult,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -23,6 +21,9 @@ export const WebcamScanner: React.FC<WebcamScannerProps> = ({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [fps, setFps] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  // Store live detection result to display right inside the video
+  const [currentResult, setCurrentResult] = useState<ImageDetectionResult | null>(null);
 
   // Start webcam
   const startCamera = async () => {
@@ -40,8 +41,8 @@ export const WebcamScanner: React.FC<WebcamScannerProps> = ({
     } catch (err: any) {
       setErrorMsg(
         err.name === "NotAllowedError"
-          ? "Camera access was denied. Please allow camera permissions in your browser."
-          : `Could not initialize camera: ${err.message}`
+          ? "Camera permission denied. Please allow camera access in your browser."
+          : `Failed to open camera: ${err.message}`
       );
     }
   };
@@ -55,6 +56,7 @@ export const WebcamScanner: React.FC<WebcamScannerProps> = ({
     }
     setStreamActive(false);
     setContinuousScanning(false);
+    setCurrentResult(null);
     setFps(0);
   }, []);
 
@@ -64,7 +66,7 @@ export const WebcamScanner: React.FC<WebcamScannerProps> = ({
     };
   }, [stopCamera]);
 
-  // Capture single frame
+  // Capture current video frame to base64
   const captureFrame = useCallback((): string | null => {
     if (!videoRef.current || !canvasRef.current) return null;
     const video = videoRef.current;
@@ -80,14 +82,14 @@ export const WebcamScanner: React.FC<WebcamScannerProps> = ({
     return canvas.toDataURL("image/jpeg", 0.85);
   }, []);
 
-  // Single Snap & Analyze
+  // Single Snapshot Detection
   const handleSnapPhoto = async () => {
     const frameB64 = captureFrame();
     if (!frameB64) return;
     try {
       setIsProcessing(true);
       const res = await detectWebcamFrame(frameB64, confThreshold, modelId);
-      onResult(res);
+      setCurrentResult(res);
     } catch (err: any) {
       setErrorMsg(err.message || "Inference failed");
     } finally {
@@ -113,10 +115,9 @@ export const WebcamScanner: React.FC<WebcamScannerProps> = ({
       const frameB64 = captureFrame();
       if (frameB64) {
         setIsProcessing(true);
-        const t0 = performance.now();
         try {
           const res = await detectWebcamFrame(frameB64, confThreshold, modelId);
-          onResult(res);
+          setCurrentResult(res);
           frameCount++;
           const now = performance.now();
           if (now - lastTime >= 1000) {
@@ -125,19 +126,18 @@ export const WebcamScanner: React.FC<WebcamScannerProps> = ({
             lastTime = now;
           }
         } catch (e) {
-          // ignore transient frame error in live loop
+          // ignore transient frame failure
         } finally {
           setIsProcessing(false);
         }
       }
 
       if (isActive) {
-        // Run next scan in ~100ms
         setTimeout(() => {
           if (isActive) {
             animationFrameId = requestAnimationFrame(loop);
           }
-        }, 80);
+        }, 75);
       }
     };
 
@@ -149,83 +149,116 @@ export const WebcamScanner: React.FC<WebcamScannerProps> = ({
       isActive = false;
       cancelAnimationFrame(animationFrameId);
     };
-  }, [continuousScanning, captureFrame, confThreshold, modelId, onResult, isProcessing]);
+  }, [continuousScanning, captureFrame, confThreshold, modelId, isProcessing]);
+
+  const hasViolation = currentResult && currentResult.no_mask_count > 0;
 
   return (
-    <div className="space-y-4">
-      {/* Viewport container */}
-      <div className="relative rounded-2xl overflow-hidden bg-black border border-surface-light min-h-[380px] flex items-center justify-center">
-        {/* Hidden capture canvas */}
+    <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+      {/* Viewport: Detection is shown DIRECTLY IN THE VIDEO */}
+      <div className={`relative rounded-xl overflow-hidden bg-slate-900 border-2 transition-all flex items-center justify-center min-h-[440px] max-h-[580px] ${
+        hasViolation ? "border-red-500 shadow-md shadow-red-100" : "border-slate-200"
+      }`}>
+        {/* Hidden Canvas */}
         <canvas ref={canvasRef} className="hidden" />
 
-        {/* Video feed */}
+        {/* Raw Video Feed (shown when camera is on but not displaying annotated frame) */}
         <video
           ref={videoRef}
           playsInline
           muted
-          className={`w-full max-h-[460px] object-cover ${streamActive ? "block" : "hidden"}`}
+          className={`w-full h-full max-h-[560px] object-contain ${
+            streamActive && !currentResult?.annotated_image ? "block" : "hidden"
+          }`}
         />
 
-        {/* Placeholder if camera off */}
+        {/* Live Annotated Feed with In-Video Bounding Boxes */}
+        {streamActive && currentResult?.annotated_image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={currentResult.annotated_image}
+            alt="Live In-Video Detection Feed"
+            className="w-full h-full max-h-[560px] object-contain"
+          />
+        )}
+
+        {/* Camera Off Placeholder */}
         {!streamActive && (
-          <div className="text-center p-8 flex flex-col items-center">
-            <div className="w-16 h-16 rounded-2xl bg-surface-light border border-slate-700 flex items-center justify-center mb-4 text-slate-400">
+          <div className="text-center p-8 flex flex-col items-center max-w-sm">
+            <div className="w-16 h-16 rounded-2xl bg-slate-800 text-slate-300 flex items-center justify-center mb-4">
               <Camera className="w-8 h-8" />
             </div>
-            <h3 className="text-base font-semibold text-white mb-1">
-              Live Webcam Not Initialized
+            <h3 className="text-base font-semibold text-white mb-1.5">
+              Live Webcam Inactive
             </h3>
-            <p className="text-xs text-slate-400 max-w-sm mb-5">
-              Enable your local camera to test real-time face mask detection with instant bounding boxes.
+            <p className="text-xs text-slate-400 mb-5 leading-relaxed">
+              Start your webcam to see real-time bounding boxes drawn directly on your face inside the video feed.
             </p>
             <button
               onClick={startCamera}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-black font-semibold text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
+              className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs flex items-center gap-2 shadow-sm transition-all"
             >
-              <Camera className="w-4 h-4" /> Start Camera Feed
+              <Camera className="w-4 h-4" /> Start Camera
             </button>
           </div>
         )}
 
-        {/* Live HUD overlay on active video */}
+        {/* HUD In-Video Overlay Badges */}
         {streamActive && (
-          <>
-            <div className="absolute top-3 left-3 flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-rose-500/90 text-white flex items-center gap-1.5 shadow-md">
+          <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-red-600 text-white shadow-sm flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-white animate-ping" />
                 LIVE
               </span>
               {continuousScanning && (
-                <span className="px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-black/70 border border-cyan-500/40 text-cyan-300">
+                <span className="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-black/80 text-emerald-400 border border-emerald-500/40">
                   {fps} FPS
                 </span>
               )}
             </div>
 
-            {continuousScanning && <div className="animate-scan" />}
-          </>
+            {/* In-Video Compliance Counter */}
+            {currentResult && (
+              <div className="flex items-center gap-2 bg-black/85 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/10 text-xs shadow-md">
+                <span className="text-white font-medium">
+                  {currentResult.total_faces} Face{currentResult.total_faces !== 1 ? "s" : ""}
+                </span>
+                <span className="text-slate-400">•</span>
+                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> {currentResult.mask_count} Masked
+                </span>
+                <span className="text-slate-400">•</span>
+                <span className={`font-semibold flex items-center gap-1 ${
+                  currentResult.no_mask_count > 0 ? "text-red-400 font-bold" : "text-slate-400"
+                }`}>
+                  <AlertTriangle className="w-3.5 h-3.5" /> {currentResult.no_mask_count} No Mask
+                </span>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
-      {/* Camera controls toolbar */}
+      {/* Camera Controls & Status Bar */}
       {streamActive && (
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-surface p-3 rounded-2xl border border-surface-light">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setContinuousScanning(!continuousScanning)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm transition-all ${
                 continuousScanning
-                  ? "bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30"
-                  : "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30"
+                  ? "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100"
+                  : "bg-sky-600 text-white hover:bg-sky-500"
               }`}
             >
               {continuousScanning ? (
                 <>
-                  <Square className="w-3.5 h-3.5" /> Stop Real-time Scan
+                  <Square className="w-3.5 h-3.5" /> Pause Live Scan
                 </>
               ) : (
                 <>
-                  <Play className="w-3.5 h-3.5" /> Continuous Stream Inference
+                  <Play className="w-3.5 h-3.5" /> Run Real-time In-Video Scan
                 </>
               )}
             </button>
@@ -233,26 +266,33 @@ export const WebcamScanner: React.FC<WebcamScannerProps> = ({
             <button
               onClick={handleSnapPhoto}
               disabled={isProcessing}
-              className="px-4 py-2 rounded-xl text-xs font-semibold bg-surface-light hover:bg-slate-700 text-white border border-slate-700 flex items-center gap-2 transition-all disabled:opacity-50"
+              className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 flex items-center gap-1.5 transition-all disabled:opacity-50"
             >
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              Capture Single Snapshot
+              <Sparkles className="w-3.5 h-3.5 text-sky-600" />
+              Capture Snapshot
             </button>
           </div>
 
-          <button
-            onClick={stopCamera}
-            className="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all flex items-center gap-1.5"
-          >
-            <VideoOff className="w-3.5 h-3.5" /> Turn Off Camera
-          </button>
+          <div className="flex items-center gap-3">
+            {currentResult && (
+              <span className="text-xs text-slate-500 font-mono">
+                Latency: <strong className="text-slate-800">{currentResult.inference_time_ms}ms</strong>
+              </span>
+            )}
+            <button
+              onClick={stopCamera}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-red-600 hover:bg-red-50 border border-slate-200 transition-all flex items-center gap-1.5"
+            >
+              <VideoOff className="w-3.5 h-3.5" /> Turn Off Camera
+            </button>
+          </div>
         </div>
       )}
 
       {/* Error alert */}
       {errorMsg && (
-        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0" />
+        <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 shrink-0 text-red-600" />
           <span>{errorMsg}</span>
         </div>
       )}
