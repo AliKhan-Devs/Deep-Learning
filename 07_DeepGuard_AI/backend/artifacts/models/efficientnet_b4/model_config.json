@@ -1,0 +1,32 @@
+{
+  "model_name": "efficientnet_b4",
+  "display_name": "XceptionNet Deepfake Detector",
+  "architecture": "efficientnet_b4",
+  "num_classes": 2,
+  "classes": [
+    "REAL",
+    "FAKE"
+  ],
+  "positive_class": "FAKE",
+  "version": "1.0.0",
+  "input_size": [
+    380,
+    380
+  ],
+  "mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "decision_threshold": 0.5,
+  "preprocessing": {
+    "face_crop_margin": 0.25,
+    "interpolation": "bilinear",
+    "color_space": "RGB"
+  }
+}

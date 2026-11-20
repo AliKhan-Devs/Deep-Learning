@@ -1,7 +1,7 @@
 # Project 06: FaceMask AI — Real-Time Face Mask Detection System
 
 <p align="center">
-  <img src="assets/v3_val_batch0_pred.jpg" alt="FaceMask AI Banner" width="850px" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
+  <img src="assets/test_image_1.png" alt="FaceMask AI Banner" width="850px" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
 </p>
 
 <p align="center">
@@ -35,7 +35,7 @@ Imagine walking into a hospital, airport, laboratory, or cleanroom during a heal
 
 ---
 
-## 🏆 2. The 3 Experiments: Which Model Was Best and Why?
+## 2. The 3 Experiments: Which Model Was Best and Why?
 
 To determine the most dependable detector, we conducted three complete training runs across **50 epochs each** on an identical custom dataset.
 
@@ -43,7 +43,7 @@ Here are the real metrics extracted directly from each experiment's training run
 
 ### Benchmark Comparison Table
 
-| Metric / Feature | Experiment 1: YOLOv8n | Experiment 2: YOLOv26n | Experiment 3: YOLOv26s (Champion) 🏆 |
+| Metric / Feature | Experiment 1: YOLOv8n | Experiment 2: YOLOv26n | Experiment 3: YOLOv26s (Champion)  |
 | :--- | :---: | :---: | :---: |
 | **Architecture** | YOLOv8 Nano | YOLO Nano Custom | **YOLO Small Deep Pyramid** |
 | **Parameters** | ~3.2 Million | ~3.1 Million | **~11.2 Million** |
@@ -52,16 +52,16 @@ Here are the real metrics extracted directly from each experiment's training run
 | **Image Resolution** | 640 × 640 | 640 × 640 | **640 × 640** |
 | **Batch Size** | 16 | 16 | **16** |
 | **Best mAP50** | **91.38%** (Epoch 38) | 90.46% (Epoch 33) | **90.44%** (Epoch 47) |
-| **Best mAP50-95 (Strict IoU)** | 53.12% | 53.63% | **55.85% (Epoch 31) ⭐** |
+| **Best mAP50-95 (Strict IoU)** | 53.12% | 53.63% | **55.85% (Epoch 31) ** |
 | **Final Validation Precision** | 86.86% | **92.13%** | **91.50%** |
 | **Final Validation Recall** | **85.15%** | 80.63% | **84.82%** |
 | **Final Val Classification Loss** | 0.6225 | 0.6797 | **0.5384 (Lowest Error)** |
 | **Final Val Box Loss** | **1.2518** | 1.3437 | **1.3450** |
-| **Production Decision** | Baseline comparison | High-precision edge IoT | **🏆 Champion Production Model** |
+| **Production Decision** | Baseline comparison | High-precision edge IoT | **Champion Production Model** |
 
 ---
 
-### 🥇 Why YOLOv26s Won the Championship
+### Why YOLOv26s Won the Championship
 
 ```
                           mAP50-95 Localization Accuracy
@@ -81,7 +81,7 @@ Here are the real metrics extracted directly from each experiment's training run
 
 ---
 
-## 📈 3. Visual Training Curves & Diagnostic Artifacts
+## 3. Visual Training Curves & Diagnostic Artifacts
 
 ### 1. Training Convergence & Loss Evolution (`results.png`)
 The loss curves below demonstrate stable gradient descent over 50 epochs with no signs of overfitting:
@@ -103,7 +103,7 @@ Shows near-zero off-diagonal confusion between `mask` and `no_mask`:
 
 ---
 
-## 🧠 4. Deep Learning & Object Detection Concepts (Plain English)
+## 4. Deep Learning & Object Detection Concepts (Plain English)
 
 ### What is IoU (Intersection over Union)?
 IoU measures the overlap between where the model *thinks* the face is versus where the face *actually* is:
@@ -124,7 +124,7 @@ Instead of forcing coordinates into rigid integer pixel locations, DFL models bo
 
 ---
 
-## 🏗️ 5. System Architecture & Data Flow
+## 5. System Architecture & Data Flow
 
 ```mermaid
 flowchart TD
@@ -178,7 +178,7 @@ flowchart TD
 
 ---
 
-## 📁 6. Repository Structure
+## 6. Repository Structure
 
 ```
 06_Face_Mask_Detection/
@@ -243,7 +243,7 @@ flowchart TD
 
 ---
 
-## ⚡ 7. Quickstart Guide
+## 7. Quickstart Guide
 
 ### Prerequisites
 - Python 3.10+
@@ -276,7 +276,7 @@ Open your browser and navigate to:
 
 ---
 
-## 🧪 8. Automated Backend Tests
+## 8. Automated Backend Tests
 
 The backend includes a comprehensive 10-test test suite verifying model loading, inference schemas, threshold filters, and all API endpoints.
 
@@ -303,7 +303,7 @@ tests/test_detector.py::test_detector_sample_inference PASSED            [100%]
 
 ---
 
-## 📡 9. REST API Reference
+## 9. REST API Reference
 
 | Method | Endpoint | Description | Request Payload | Response |
 | :--- | :--- | :--- | :--- | :--- |
@@ -320,7 +320,7 @@ tests/test_detector.py::test_detector_sample_inference PASSED            [100%]
 
 ---
 
-## 👥 10. Author & Portfolio Context
+## 10. Author & Portfolio Context
 - **Developer:** Ali Khan
 - **Portfolio Repository:** [Deep-Learning](https://github.com/AliKhan-Devs/Deep-Learning.git)
 - **Part of Project 06:** Face Mask Detection with YOLOv8 & YOLOv26
