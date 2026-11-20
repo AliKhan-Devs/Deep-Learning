@@ -87,11 +87,12 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 
 ---
 
-## AI Systems
+## AI Systems & Healthcare AI
 
 * [x] Face Mask Detection
 * [x] DeepGuard AI – Deepfake Image & Video Detection System
 * [x] VisionAttend AI – Biometric Facial Attendance & Analytics System
+* [ ] NeuroScan XAI – Explainable Medical Brain MRI Diagnosis System
 * [ ] Fire & Smoke Detection
 * [ ] Weapon Detection
 * [ ] GuardianGrid AI Surveillance Platform
@@ -100,19 +101,20 @@ Rather than treating deep learning as a collection of libraries, my goal is to u
 
 # Projects
 
-| #  | Project                                                    | Status      |
-| -- | ---------------------------------------------------------- | ----------- |
-| 01 | MNIST Digit Classification (CNN Fundamentals)              | ✅ Completed |
-| 02 | Cats vs Dogs Classification (Custom CNN)                   | ✅ Completed |
-| 03 | CIFAR-10 Image Classification (Deep CNN)                   | ✅ Completed |
-| 04 | Transfer Learning with ResNet18                            | ✅ Completed |
-| 05 | YOLOv8 Object Detection                                    | ✅ Completed |
-| 06 | Face Mask Detection (YOLO)                                 | ✅ Completed |
-| 07 | DeepGuard AI – Deepfake Detection System                   | ✅ Completed |
-| 08 | VisionAttend AI – Biometric Facial Attendance & Analytics  | ✅ Completed |
-| 09 | Fire & Smoke Detection (YOLO)                              | ⏳ Upcoming  |
-| 10 | Weapon Detection (YOLO)                                    | ⏳ Upcoming  |
-| 11 | GuardianGrid – AI Surveillance System                      | ⏳ Upcoming  |
+| #  | Project                                                    | Status        |
+| -- | ---------------------------------------------------------- | ------------- |
+| 01 | MNIST Digit Classification (CNN Fundamentals)              | ✅ Completed   |
+| 02 | Cats vs Dogs Classification (Custom CNN)                   | ✅ Completed   |
+| 03 | CIFAR-10 Image Classification (Deep CNN)                   | ✅ Completed   |
+| 04 | Transfer Learning with ResNet18                            | ✅ Completed   |
+| 05 | YOLOv8 Object Detection                                    | ✅ Completed   |
+| 06 | Face Mask Detection (YOLO)                                 | ✅ Completed   |
+| 07 | DeepGuard AI – Deepfake Detection System                   | ✅ Completed   |
+| 08 | VisionAttend AI – Biometric Facial Attendance & Analytics  | ✅ Completed   |
+| 09 | NeuroScan XAI – Explainable Brain MRI Tumor Diagnosis      | 🔄 In Training|
+| 10 | Fire & Smoke Detection (YOLO)                              | ⏳ Upcoming    |
+| 11 | Weapon Detection (YOLO)                                    | ⏳ Upcoming    |
+| 12 | GuardianGrid – AI Surveillance System                      | ⏳ Upcoming    |
 
 ---
 

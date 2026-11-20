@@ -1,0 +1,3 @@
+# Destination directory for trained model weights:
+# - best_densenet121.pth
+# - model_metadata.json
