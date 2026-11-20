@@ -8,6 +8,8 @@
 [![FaceNet](https://img.shields.io/badge/Model-Inception--ResNet--v1-blue)](https://github.com/timesler/facenet-pytorch)
 [![Tests](https://img.shields.io/badge/Tests-18%20Passed-emerald)](https://pytest.org/)
 
+![Testing image of the dashboard](./assets/1.png)
+
 **VisionAttend AI** is a contactless, enterprise-grade biometric attendance and workforce analytics platform engineered using **Deep Metric Learning** and real-time computer vision. It replaces slow, hygiene-compromised fingerprint scanners and shareable RFID badges with spoof-resistant facial recognition, automated shift tracking, and department-level punctuality analytics.
 
 ---
@@ -36,16 +38,16 @@ flowchart TD
         Avatars["Avatars & Audit Snapshots Directory"]
     end
 
-    Kiosk -->|Live Base64 WebCam Frame| Detector
-    Detector -->|160x160 Aligned Face Crop| Liveness
-    Liveness -->|Spoof Rejected| Kiosk
-    Liveness -->|Verified Real Face| Embedder
-    Embedder -->|512-D L2 Normalized Vector| Matcher
-    DB <-->|Enrolled Centroid Vectors| Matcher
-    Matcher -->|Identity + Confidence| StateMachine
-    StateMachine -->|Record Check-In / Check-Out| DB
-    StateMachine -->|Instant Toast & BBox| Kiosk
-    Directory -->|3-Shot Poses (Front, Left, Right)| Embedder
+    Kiosk -->|"Live Base64 WebCam Frame"| Detector
+    Detector -->|"160x160 Aligned Face Crop"| Liveness
+    Liveness -->|"Spoof Rejected"| Kiosk
+    Liveness -->|"Verified Real Face"| Embedder
+    Embedder -->|"512-D L2 Normalized Vector"| Matcher
+    DB <-->|"Enrolled Centroid Vectors"| Matcher
+    Matcher -->|"Identity + Confidence"| StateMachine
+    StateMachine -->|"Record Check-In / Check-Out"| DB
+    StateMachine -->|"Instant Toast & BBox"| Kiosk
+    Directory -->|"3-Shot Poses (Front, Left, Right)"| Embedder
     DB --> Dashboard
     DB --> Logs
 ```
