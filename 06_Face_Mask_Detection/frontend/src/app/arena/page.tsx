@@ -393,34 +393,32 @@ export default function MultiModelArenaPage() {
         {comparisonResults && comparisonResults.length === 3 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {comparisonResults.map((item, idx) => {
-              const isChampion = item.model_used === "v3";
+              const isV3 = item.model_used === "v3";
               return (
                 <div
                   key={item.model_used}
                   className={`bg-white rounded-2xl border transition-all overflow-hidden shadow-sm flex flex-col ${
-                    isChampion
-                      ? "border-emerald-400 ring-2 ring-emerald-100"
+                    isV3
+                      ? "border-sky-300 ring-2 ring-sky-100"
                       : "border-slate-200"
                   }`}
                 >
                   {/* Card Header */}
                   <div className={`p-4 border-b flex items-center justify-between ${
-                    isChampion ? "bg-emerald-50/60 border-emerald-200" : "bg-slate-50 border-slate-100"
+                    isV3 ? "bg-sky-50/60 border-sky-200" : "bg-slate-50 border-slate-100"
                   }`}>
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="font-bold text-sm text-slate-900">
                           {item.model_name.split(" ")[0]}
                         </span>
-                        {isChampion ? (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white flex items-center gap-0.5 shadow-sm">
-                            <Award className="w-2.5 h-2.5" /> CHAMPION
-                          </span>
-                        ) : (
-                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
-                            Exp {idx + 1}
-                          </span>
-                        )}
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white text-slate-800 border border-slate-200 shadow-2xs font-mono">
+                          {item.model_used === "v3"
+                            ? "55.85% mAP50-95"
+                            : item.model_used === "v2"
+                            ? "92.13% Prec"
+                            : "91.38% mAP50"}
+                        </span>
                       </div>
                       <div className="text-[11px] text-slate-500 mt-0.5">
                         {item.model_used === "v3"
@@ -505,10 +503,21 @@ export default function MultiModelArenaPage() {
         )}
 
         {/* Comparison Summary Table */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
-          <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-            Architecture, Weights & Latency Tradeoff Summary
-          </h3>
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+            <div>
+              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                Model Performance & Tradeoff Matrix
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                Empirical evaluation across 50 epochs on the custom face mask test dataset
+              </p>
+            </div>
+            <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full">
+              Metrics-Driven Selection
+            </span>
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left">
               <thead>
@@ -516,38 +525,81 @@ export default function MultiModelArenaPage() {
                   <th className="py-2.5 px-3">Model</th>
                   <th className="py-2.5 px-3">Parameters</th>
                   <th className="py-2.5 px-3">File Size</th>
+                  <th className="py-2.5 px-3">mAP50</th>
                   <th className="py-2.5 px-3">mAP50-95</th>
-                  <th className="py-2.5 px-3">Typical FPS</th>
-                  <th className="py-2.5 px-3">Best Use Case</th>
+                  <th className="py-2.5 px-3">Precision</th>
+                  <th className="py-2.5 px-3">Recall</th>
+                  <th className="py-2.5 px-3">Typical Speed</th>
+                  <th className="py-2.5 px-3">When to Use</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-mono">
                 <tr>
-                  <td className="py-2 px-3 font-sans font-bold text-slate-800">V1: YOLOv8n</td>
-                  <td className="py-2 px-3">3.2M</td>
-                  <td className="py-2 px-3">6.25 MB</td>
-                  <td className="py-2 px-3 text-slate-600">53.12%</td>
-                  <td className="py-2 px-3 text-emerald-600 font-bold">~60-80 FPS</td>
-                  <td className="py-2 px-3 font-sans text-slate-500">Fast IoT Raspberry Pi</td>
+                  <td className="py-2.5 px-3 font-sans font-bold text-slate-800">YOLOv8n (v1)</td>
+                  <td className="py-2.5 px-3">3.2M</td>
+                  <td className="py-2.5 px-3">6.25 MB</td>
+                  <td className="py-2.5 px-3 text-sky-700 font-bold">91.38%</td>
+                  <td className="py-2.5 px-3 text-slate-600">53.12%</td>
+                  <td className="py-2.5 px-3 text-slate-700">86.86%</td>
+                  <td className="py-2.5 px-3 text-slate-700">85.15%</td>
+                  <td className="py-2.5 px-3 text-emerald-600 font-bold">~60-80 FPS</td>
+                  <td className="py-2.5 px-3 font-sans text-slate-600 text-[11px]">
+                    Standard reference baseline & legacy YOLOv8 pipeline deployments
+                  </td>
                 </tr>
                 <tr>
-                  <td className="py-2 px-3 font-sans font-bold text-slate-800">V2: YOLOv26n</td>
-                  <td className="py-2 px-3">3.1M</td>
-                  <td className="py-2 px-3">5.45 MB</td>
-                  <td className="py-2 px-3 text-slate-600">53.63%</td>
-                  <td className="py-2 px-3 text-emerald-600 font-bold">~65-85 FPS</td>
-                  <td className="py-2 px-3 font-sans text-slate-500">Low false alarm edge apps</td>
+                  <td className="py-2.5 px-3 font-sans font-bold text-slate-800">YOLOv26n (v2)</td>
+                  <td className="py-2.5 px-3">3.1M</td>
+                  <td className="py-2.5 px-3">5.45 MB</td>
+                  <td className="py-2.5 px-3 text-slate-700">90.46%</td>
+                  <td className="py-2.5 px-3 text-slate-600">53.63%</td>
+                  <td className="py-2.5 px-3 text-sky-700 font-bold">92.13%</td>
+                  <td className="py-2.5 px-3 text-slate-700">80.63%</td>
+                  <td className="py-2.5 px-3 text-emerald-600 font-bold">~65-85 FPS</td>
+                  <td className="py-2.5 px-3 font-sans text-slate-600 text-[11px]">
+                    Edge devices (Pi/Jetson), mobile hardware & low false-alarm alerting
+                  </td>
                 </tr>
-                <tr className="bg-emerald-50/50">
-                  <td className="py-2 px-3 font-sans font-bold text-emerald-800">V3: YOLOv26s 🏆</td>
-                  <td className="py-2 px-3 text-emerald-800 font-bold">11.2M</td>
-                  <td className="py-2 px-3">20.31 MB</td>
-                  <td className="py-2 px-3 text-emerald-700 font-bold">55.85% ⭐</td>
-                  <td className="py-2 px-3 text-sky-700 font-bold">~35-50 FPS</td>
-                  <td className="py-2 px-3 font-sans font-medium text-emerald-900">Workstations & Public Safety</td>
+                <tr className="bg-sky-50/40">
+                  <td className="py-2.5 px-3 font-sans font-bold text-sky-900">YOLOv26s (v3)</td>
+                  <td className="py-2.5 px-3 text-slate-800 font-bold">11.2M</td>
+                  <td className="py-2.5 px-3 text-slate-800">20.31 MB</td>
+                  <td className="py-2.5 px-3 text-slate-700">90.44%</td>
+                  <td className="py-2.5 px-3 text-emerald-700 font-bold">55.85%</td>
+                  <td className="py-2.5 px-3 text-slate-800 font-bold">91.50%</td>
+                  <td className="py-2.5 px-3 text-emerald-700 font-bold">84.82%</td>
+                  <td className="py-2.5 px-3 text-slate-700 font-bold">~35-50 FPS</td>
+                  <td className="py-2.5 px-3 font-sans text-slate-800 font-medium text-[11px]">
+                    High-accuracy safety checkpoints, crowded areas, angled faces & servers
+                  </td>
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          {/* Deployment Recommendations Card */}
+          <div className="pt-2">
+            <h4 className="text-xs font-bold text-slate-800 mb-2">When to Use Which Model in Production:</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                <span className="font-bold text-slate-900 block">YOLOv26s &mdash; High Accuracy</span>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  Best when strict spatial accuracy (55.85% mAP50-95) is required. Ideal for hospitals, crowded security gates, transit hubs, and workstations with GPU capability.
+                </p>
+              </div>
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                <span className="font-bold text-slate-900 block">YOLOv26n &mdash; Edge & Low False Alarms</span>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  Best when false alarms must be prevented (92.13% precision) or memory footprint is constrained (5.45 MB). Ideal for Raspberry Pi, mobile, and turnstiles.
+                </p>
+              </div>
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                <span className="font-bold text-slate-900 block">YOLOv8n &mdash; Standard Baseline</span>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  Best for standard single-camera monitoring, legacy YOLOv8 pipeline integration, and comparative benchmarking (91.38% mAP50).
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </main>

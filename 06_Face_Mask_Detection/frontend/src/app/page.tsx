@@ -198,7 +198,7 @@ export default function Home() {
 
       <footer className="border-t border-slate-200 bg-white py-4 px-6 mt-12 text-center text-xs text-slate-500">
         <p>
-          FaceMask AI • Deep Learning Portfolio Project 06 • Ultralytics YOLOv26s Champion & FastAPI
+          FaceMask AI &bull; Deep Learning Portfolio Project 06 &bull; Multi-Model YOLO Architecture Suite (v8n, v26n, v26s) & FastAPI
         </p>
       </footer>
     </div>

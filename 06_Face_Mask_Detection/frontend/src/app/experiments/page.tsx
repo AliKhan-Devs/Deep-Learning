@@ -52,35 +52,146 @@ export default function ExperimentsPage() {
           </div>
         </div>
 
-        {/* Champion Announcement Card */}
-        <div className="rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm relative overflow-hidden">
+        {/* Empirical Metrics Comparison & Selection Framework Card */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm relative overflow-hidden space-y-4">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
             <div className="space-y-2">
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 w-fit">
-                <Award className="w-4 h-4 text-emerald-600" /> OFFICIAL CHAMPION: EXPERIMENT 3 (YOLOv26s)
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-300 flex items-center gap-1.5 w-fit">
+                <BarChart2 className="w-4 h-4 text-sky-600" /> EMPIRICAL BENCHMARK ANALYSIS & MODEL PROFILES
               </span>
               <h3 className="text-xl font-bold text-slate-900">
-                Why YOLOv26s Was Selected For Final Production Deployment
+                Detailed 50-Epoch Experimental Metrics & Deployment Guidelines
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
-                Across 50 training epochs, <strong>YOLOv26s</strong> delivered the benchmark-leading{" "}
-                <span className="text-emerald-700 font-bold font-mono">55.85% mAP50-95</span>.
-                While lightweight nano architectures (V1 and V2) performed well at rough 50% IoU thresholds,
-                YOLOv26s demonstrated tighter bounding-box boundaries, lowest classification loss (0.5384),
-                and zero false negative drop-offs in crowded scenes.
+                Rather than treating one model as a one-size-fits-all solution, our three 50-epoch fine-tuning experiments reveal clear operational tradeoffs. <strong>YOLOv26s</strong> achieved the highest overall spatial localization accuracy (<span className="text-slate-900 font-bold font-mono">55.85% mAP50-95</span>) and lowest class loss (0.5384), while <strong>YOLOv26n</strong> achieved the highest precision (<span className="text-slate-900 font-bold font-mono">92.13%</span>) in an ultra-compact 5.45 MB footprint, and <strong>YOLOv8n</strong> delivered strong 50% IoU performance (<span className="text-slate-900 font-bold font-mono">91.38% mAP50</span>) on standard pipelines.
               </p>
             </div>
 
-            <div className="flex flex-row md:flex-col gap-3 shrink-0">
-              <div className="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200 text-center min-w-[130px]">
-                <div className="text-[10px] text-emerald-800 uppercase font-bold">Champion mAP50-95</div>
-                <div className="text-2xl font-bold font-mono text-emerald-700">55.85%</div>
-                <div className="text-[10px] text-emerald-600">Strict IoU Accuracy</div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 shrink-0 font-mono">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center min-w-[110px]">
+                <div className="text-[10px] text-slate-500 uppercase font-sans font-bold">Highest mAP50-95</div>
+                <div className="text-xl font-bold text-emerald-700">55.85%</div>
+                <div className="text-[10px] text-slate-500 font-sans">YOLOv26s (v3)</div>
               </div>
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center min-w-[130px]">
-                <div className="text-[10px] text-slate-500 uppercase font-bold">Precision / Recall</div>
-                <div className="text-2xl font-bold font-mono text-slate-800">91.5% / 84.8%</div>
-                <div className="text-[10px] text-slate-500">Balanced Detection</div>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center min-w-[110px]">
+                <div className="text-[10px] text-slate-500 uppercase font-sans font-bold">Highest Precision</div>
+                <div className="text-xl font-bold text-sky-700">92.13%</div>
+                <div className="text-[10px] text-slate-500 font-sans">YOLOv26n (v2)</div>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center min-w-[110px] col-span-2 sm:col-span-1">
+                <div className="text-[10px] text-slate-500 uppercase font-sans font-bold">Highest mAP50</div>
+                <div className="text-xl font-bold text-slate-800">91.38%</div>
+                <div className="text-[10px] text-slate-500 font-sans">YOLOv8n (v1)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* When to Use Which Model Deployment Framework */}
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <HelpCircle className="w-4 h-4 text-sky-600" />
+            <h3 className="text-sm font-bold text-slate-900">
+              When to Use Which Model: Practical Deployment Decision Framework
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            {/* V3 Profile */}
+            <div className="p-4 rounded-xl border-2 border-sky-200 bg-sky-50/30 flex flex-col justify-between space-y-3">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900 text-sm">YOLOv26s (Small)</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-300">
+                    High Accuracy
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5 p-2 bg-white rounded-lg border border-slate-200 font-mono text-[11px]">
+                  <div>mAP50-95: <strong>55.85%</strong></div>
+                  <div>Recall: <strong>84.82%</strong></div>
+                  <div>Precision: <strong>91.50%</strong></div>
+                  <div>Weights: <strong>20.31 MB</strong></div>
+                </div>
+                <div className="space-y-1 text-slate-700">
+                  <strong className="block text-slate-900 text-[11px] uppercase tracking-wide">When to Use:</strong>
+                  <p className="leading-relaxed text-[11px] text-slate-600">
+                    Deploy when high spatial localization, tight boundary fitting, and catching distant or partially occluded faces are paramount.
+                  </p>
+                  <ul className="list-disc list-inside space-y-0.5 text-[11px] text-slate-600 pt-1">
+                    <li>Hospitals, clinics & critical healthcare facilities</li>
+                    <li>Crowded airport & railway security checkpoints</li>
+                    <li>Surveillance cameras with varying angles & lighting</li>
+                    <li>Server-side GPU systems processing 35-50+ FPS</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="pt-2 border-t border-slate-200/60 text-[10px] text-slate-500">
+                <strong>Tradeoff:</strong> 3.7x larger file size (20.3 MB vs 5.4 MB) and slightly higher compute requirement.
+              </div>
+            </div>
+
+            {/* V2 Profile */}
+            <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between space-y-3">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900 text-sm">YOLOv26n (Nano)</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-800 border border-slate-300">
+                    Lowest False Alarms
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5 p-2 bg-white rounded-lg border border-slate-200 font-mono text-[11px]">
+                  <div>Precision: <strong>92.13%</strong></div>
+                  <div>mAP50-95: <strong>53.63%</strong></div>
+                  <div>Recall: <strong>80.63%</strong></div>
+                  <div>Weights: <strong>5.45 MB</strong></div>
+                </div>
+                <div className="space-y-1 text-slate-700">
+                  <strong className="block text-slate-900 text-[11px] uppercase tracking-wide">When to Use:</strong>
+                  <p className="leading-relaxed text-[11px] text-slate-600">
+                    Deploy on resource-constrained hardware or automated audio alerting systems where false positive mask alerts cannot be tolerated.
+                  </p>
+                  <ul className="list-disc list-inside space-y-0.5 text-[11px] text-slate-600 pt-1">
+                    <li>Embedded devices (Raspberry Pi, Jetson Nano)</li>
+                    <li>Automated turnstiles & siren alert systems</li>
+                    <li>High-throughput multi-camera video pipelines (65-85+ FPS)</li>
+                    <li>Mobile and low-bandwidth edge deployments</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="pt-2 border-t border-slate-200/60 text-[10px] text-slate-500">
+                <strong>Tradeoff:</strong> Modest recall drop (80.63%) on tiny, distant faces in deep crowds.
+              </div>
+            </div>
+
+            {/* V1 Profile */}
+            <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between space-y-3">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900 text-sm">YOLOv8n (Baseline)</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-800 border border-slate-300">
+                    Standard Reference
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5 p-2 bg-white rounded-lg border border-slate-200 font-mono text-[11px]">
+                  <div>mAP50: <strong>91.38%</strong></div>
+                  <div>mAP50-95: <strong>53.12%</strong></div>
+                  <div>Recall: <strong>85.15%</strong></div>
+                  <div>Weights: <strong>6.25 MB</strong></div>
+                </div>
+                <div className="space-y-1 text-slate-700">
+                  <strong className="block text-slate-900 text-[11px] uppercase tracking-wide">When to Use:</strong>
+                  <p className="leading-relaxed text-[11px] text-slate-600">
+                    Deploy as an established reference baseline or in existing infrastructure already standardized on Ultralytics YOLOv8 weights.
+                  </p>
+                  <ul className="list-disc list-inside space-y-0.5 text-[11px] text-slate-600 pt-1">
+                    <li>General single-webcam office entry check-ins</li>
+                    <li>Comparative baseline studies and academic research</li>
+                    <li>Pipelines using existing ONNX/TensorRT YOLOv8 runtimes</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="pt-2 border-t border-slate-200/60 text-[10px] text-slate-500">
+                <strong>Tradeoff:</strong> Lower strict spatial accuracy (53.12% mAP50-95) and lower precision (86.86%).
               </div>
             </div>
           </div>
@@ -104,7 +215,7 @@ export default function ExperimentsPage() {
                   <th className="py-3 px-4">V1: YOLOv8n (Baseline)</th>
                   <th className="py-3 px-4">V2: YOLOv26n (Nano Custom)</th>
                   <th className="py-3 px-4 text-emerald-800 font-bold bg-emerald-50/60">
-                    V3: YOLOv26s (Champion) 🏆
+                    V3: YOLOv26s (High-Accuracy Small)
                   </th>
                 </tr>
               </thead>
@@ -180,7 +291,7 @@ export default function ExperimentsPage() {
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                V3 Champion Curves
+                V3: YOLOv26s Curves
               </button>
               <button
                 onClick={() => setActiveTab("v2")}
@@ -279,14 +390,14 @@ export default function ExperimentsPage() {
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
               <h5 className="font-bold text-sky-700">What is mAP50?</h5>
               <p className="text-slate-600 leading-relaxed">
-                <strong>Mean Average Precision at 0.50 IoU.</strong> A predicted box counts as correct if it overlaps at least 50% with the human face. Our champion scored <strong>90.44%</strong>.
+                <strong>Mean Average Precision at 0.50 IoU.</strong> A predicted box counts as correct if it overlaps at least 50% with the human face. YOLOv26s achieved <strong>90.44%</strong> and YOLOv8n achieved <strong>91.38%</strong>.
               </p>
             </div>
 
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
               <h5 className="font-bold text-emerald-700">What is mAP50-95? (The Gold Standard)</h5>
               <p className="text-slate-600 leading-relaxed">
-                Evaluates accuracy across 10 progressive overlap thresholds (from 50% to 95%). It reveals whether the box tightly hugs the face or is just a rough guess. <strong>YOLOv26s won here by 2.2%</strong>.
+                Evaluates accuracy across 10 progressive overlap thresholds (from 50% to 95%). It reveals whether the box tightly hugs the face or is just a rough guess. <strong>YOLOv26s achieved the highest score here (55.85%)</strong>, outperforming nano variants by 2.22% to 2.73%.
               </p>
             </div>
 
