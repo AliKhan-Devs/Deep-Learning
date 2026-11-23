@@ -18,30 +18,30 @@ export const StatCard: React.FC<StatCardProps> = ({
   color = "indigo",
 }) => {
   const colorMap = {
-    indigo: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
-    emerald: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
-    amber: "text-amber-400 bg-amber-500/10 border-amber-500/20",
-    rose: "text-rose-400 bg-rose-500/10 border-rose-500/20",
-    sky: "text-sky-400 bg-sky-500/10 border-sky-500/20",
+    indigo: "text-indigo-600 bg-indigo-50 border-indigo-100",
+    emerald: "text-emerald-600 bg-emerald-50 border-emerald-100",
+    amber: "text-amber-600 bg-amber-50 border-amber-100",
+    rose: "text-rose-600 bg-rose-50 border-rose-100",
+    sky: "text-sky-600 bg-sky-50 border-sky-100",
   };
 
   return (
-    <div className="saas-card p-5 saas-card-hover flex flex-col justify-between">
+    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-slate-300 hover:shadow transition-all flex flex-col justify-between">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
           {title}
         </span>
-        <div className={`p-2 rounded-xl border ${colorMap[color]}`}>{icon}</div>
+        <div className={`p-2 rounded-lg border ${colorMap[color]}`}>{icon}</div>
       </div>
 
       <div className="mt-4">
-        <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+        <div className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
           {value}
         </div>
         {subtitle && (
-          <div className="text-xs text-slate-400 mt-1 flex items-center justify-between">
+          <div className="text-xs text-slate-500 mt-1 flex items-center justify-between">
             <span>{subtitle}</span>
-            {trend && <span className="font-semibold text-emerald-400">{trend}</span>}
+            {trend && <span className="font-semibold text-emerald-600">{trend}</span>}
           </div>
         )}
       </div>

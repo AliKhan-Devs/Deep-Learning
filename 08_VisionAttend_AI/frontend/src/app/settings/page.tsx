@@ -6,7 +6,6 @@ import {
   Save,
   CheckCircle2,
   Clock,
-  ShieldAlert,
   Sliders,
   RefreshCw
 } from "lucide-react";
@@ -22,7 +21,7 @@ export default function SettingsPage() {
     liveness_threshold: 40.0,
   });
 
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
@@ -53,12 +52,12 @@ export default function SettingsPage() {
   return (
     <div className="max-w-3xl space-y-6 select-none">
       {/* Header */}
-      <div className="pb-4 border-b border-[#1e293b]">
-        <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-          <SettingsIcon className="w-6 h-6 text-indigo-400" />
+      <div className="pb-4 border-b border-slate-200">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+          <SettingsIcon className="w-6 h-6 text-indigo-600" />
           Enterprise System Settings
         </h1>
-        <p className="text-xs text-slate-400 mt-0.5">
+        <p className="text-xs text-slate-500 mt-0.5">
           Configure work shifts, late arrival thresholds, and deep facial recognition sensitivity
         </p>
       </div>
@@ -66,14 +65,14 @@ export default function SettingsPage() {
       <form onSubmit={handleSave} className="space-y-6">
         {/* Attendance Policy Card */}
         <div className="saas-card p-6 space-y-4">
-          <div className="flex items-center gap-2 pb-3 border-b border-[#1e293b]">
-            <Clock className="w-4 h-4 text-indigo-400" />
-            <h3 className="font-bold text-white text-sm">Attendance &amp; Shift Schedule</h3>
+          <div className="flex items-center gap-2 pb-3 border-b border-slate-200">
+            <Clock className="w-4 h-4 text-indigo-600" />
+            <h3 className="font-semibold text-slate-900 text-sm">Attendance &amp; Shift Schedule</h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <label className="block text-slate-400 font-semibold mb-1">
+              <label className="block text-slate-700 font-medium mb-1">
                 Standard Shift Start Time
               </label>
               <input
@@ -83,7 +82,7 @@ export default function SettingsPage() {
                 onChange={(e) =>
                   setSettings({ ...settings, work_start_time: e.target.value })
                 }
-                className="w-full px-3 py-2 rounded-xl bg-[#141d33] border border-[#23314d] text-white focus:outline-none focus:border-indigo-500 font-mono"
+                className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono transition-colors"
               />
               <p className="text-[11px] text-slate-500 mt-1">
                 Official time when the workday shift commences.
@@ -91,7 +90,7 @@ export default function SettingsPage() {
             </div>
 
             <div>
-              <label className="block text-slate-400 font-semibold mb-1">
+              <label className="block text-slate-700 font-medium mb-1">
                 Late Arrival Grace Period (Minutes)
               </label>
               <input
@@ -105,7 +104,7 @@ export default function SettingsPage() {
                     late_grace_minutes: parseInt(e.target.value, 10) || 0,
                   })
                 }
-                className="w-full px-3 py-2 rounded-xl bg-[#141d33] border border-[#23314d] text-white focus:outline-none focus:border-indigo-500 font-mono"
+                className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono transition-colors"
               />
               <p className="text-[11px] text-slate-500 mt-1">
                 Check-ins after {settings.work_start_time.slice(0, 5)} + {settings.late_grace_minutes} mins are marked LATE.
@@ -116,19 +115,19 @@ export default function SettingsPage() {
 
         {/* Biometrics & Security Policy Card */}
         <div className="saas-card p-6 space-y-4">
-          <div className="flex items-center gap-2 pb-3 border-b border-[#1e293b]">
-            <Sliders className="w-4 h-4 text-sky-400" />
-            <h3 className="font-bold text-white text-sm">Biometric Recognition &amp; Anti-Spoofing</h3>
+          <div className="flex items-center gap-2 pb-3 border-b border-slate-200">
+            <Sliders className="w-4 h-4 text-indigo-600" />
+            <h3 className="font-semibold text-slate-900 text-sm">Biometric Recognition &amp; Anti-Spoofing</h3>
           </div>
 
           <div className="space-y-4 text-xs">
             {/* Cosine Threshold Slider */}
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="text-slate-400 font-semibold">
+                <label className="text-slate-700 font-medium">
                   FaceNet Vector Similarity Threshold (Cosine Metric)
                 </label>
-                <span className="font-mono font-bold text-indigo-400 text-sm">
+                <span className="font-mono font-semibold text-indigo-700 text-sm">
                   {settings.cosine_threshold.toFixed(2)}
                 </span>
               </div>
@@ -144,20 +143,20 @@ export default function SettingsPage() {
                     cosine_threshold: parseFloat(e.target.value),
                   })
                 }
-                className="w-full h-1.5 bg-[#141d33] rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
               />
-              <div className="flex justify-between text-[10px] text-slate-500 mt-1">
+              <div className="flex justify-between text-[11px] text-slate-500 mt-1">
                 <span>0.50 (Permissive)</span>
-                <span className="text-indigo-400 font-semibold">0.65 (Recommended)</span>
+                <span className="text-indigo-700 font-medium">0.65 (Recommended)</span>
                 <span>0.85 (Strict)</span>
               </div>
             </div>
 
             {/* Anti-spoofing toggle */}
-            <div className="pt-2 flex items-center justify-between border-t border-[#1e293b]">
+            <div className="pt-4 flex items-center justify-between border-t border-slate-200">
               <div>
-                <span className="font-semibold text-white block">Passive Liveness Detection</span>
-                <span className="text-[11px] text-slate-400">
+                <span className="font-medium text-slate-900 block">Passive Liveness Detection</span>
+                <span className="text-[11px] text-slate-500">
                   Analyze Laplacian texture variance and skin chrominance to prevent 2D photo spoofing.
                 </span>
               </div>
@@ -171,7 +170,7 @@ export default function SettingsPage() {
                   }
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-[#141d33] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600" />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600" />
               </label>
             </div>
           </div>
@@ -180,15 +179,15 @@ export default function SettingsPage() {
         {/* Submit Actions */}
         <div className="flex items-center justify-end gap-3 pt-2">
           {savedSuccess && (
-            <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-semibold">
-              <CheckCircle2 className="w-4 h-4" /> Configuration Updated Successfully
+            <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700 font-medium">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Configuration Updated Successfully
             </span>
           )}
 
           <button
             type="submit"
             disabled={saving}
-            className="px-6 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/25 transition-all flex items-center gap-2 disabled:opacity-50"
+            className="px-5 py-2.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors flex items-center gap-2 disabled:opacity-50"
           >
             {saving ? (
               <>

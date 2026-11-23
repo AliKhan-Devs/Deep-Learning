@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Clock, ScanFace, DatabaseZap, Sparkles } from "lucide-react";
+import { Clock, ScanFace, DatabaseZap } from "lucide-react";
 import { api } from "../lib/api";
 
 export const Header: React.FC = () => {
@@ -49,17 +49,17 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="h-16 border-b border-[#1e293b] bg-[#0c1222]/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-40">
+    <header className="h-16 border-b border-slate-200 bg-white/95 backdrop-blur-sm px-6 flex items-center justify-between sticky top-0 z-40">
       {/* Date & Time Widget */}
       <div className="flex items-center gap-3">
-        <div className="p-2 rounded-lg bg-[#141d33] border border-[#1e293b] text-indigo-400">
+        <div className="p-2 rounded-lg bg-slate-100 text-slate-600 border border-slate-200">
           <Clock className="w-4 h-4" />
         </div>
         <div>
-          <div className="text-xs font-bold text-white font-mono tracking-wide">
+          <div className="text-xs font-semibold text-slate-900 font-mono tracking-wide">
             {timeStr || "--:--:-- --"}
           </div>
-          <div className="text-[10px] text-slate-400">{dateStr || "Loading..."}</div>
+          <div className="text-[11px] text-slate-500">{dateStr || "Loading..."}</div>
         </div>
       </div>
 
@@ -68,16 +68,16 @@ export const Header: React.FC = () => {
         <button
           onClick={handleSeedDemo}
           disabled={seeding}
-          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#131d33] hover:bg-[#1a2744] text-slate-300 border border-[#23314d] transition-all disabled:opacity-50"
+          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-sm transition-colors disabled:opacity-50"
           title="Seed realistic sample corporate personnel"
         >
-          <DatabaseZap className="w-3.5 h-3.5 text-sky-400" />
+          <DatabaseZap className="w-3.5 h-3.5 text-slate-500" />
           {seeding ? "Seeding..." : "Seed Demo Workforce"}
         </button>
 
         <Link
           href="/kiosk"
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/20 transition-all"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors"
         >
           <ScanFace className="w-4 h-4" />
           Launch Reception Kiosk

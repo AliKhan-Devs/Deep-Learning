@@ -4,14 +4,7 @@ import React, { useState, useEffect } from "react";
 import {
   ClipboardList,
   Download,
-  Filter,
   Search,
-  Calendar,
-  Building2,
-  RefreshCw,
-  Clock,
-  CheckCircle2,
-  AlertTriangle
 } from "lucide-react";
 import { api } from "../../lib/api";
 import { AttendanceRecord } from "../../lib/types";
@@ -67,13 +60,13 @@ export default function AttendancePage() {
   return (
     <div className="space-y-6 select-none">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#1e293b]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <ClipboardList className="w-6 h-6 text-indigo-400" />
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+            <ClipboardList className="w-6 h-6 text-indigo-600" />
             Attendance History &amp; Audit Logs
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             Detailed verification records, timestamps, and confidence metrics
           </p>
         </div>
@@ -81,7 +74,7 @@ export default function AttendancePage() {
         <a
           href={api.getExportCsvUrl(startDate, endDate)}
           download
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition-all self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-colors self-start sm:self-auto"
         >
           <Download className="w-4 h-4" /> Download CSV Export
         </a>
@@ -98,7 +91,7 @@ export default function AttendancePage() {
               placeholder="Search employee..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#141d33] border border-[#23314d] text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full pl-9 pr-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
             />
           </div>
 
@@ -107,7 +100,7 @@ export default function AttendancePage() {
             <select
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-[#141d33] border border-[#23314d] text-white focus:outline-none focus:border-indigo-500"
+              className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
             >
               <option value="">All Departments</option>
               {departments.map((d) => (
@@ -123,7 +116,7 @@ export default function AttendancePage() {
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-[#141d33] border border-[#23314d] text-white focus:outline-none focus:border-indigo-500"
+              className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
             >
               {statuses.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -139,7 +132,7 @@ export default function AttendancePage() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-[#141d33] border border-[#23314d] text-white focus:outline-none focus:border-indigo-500"
+              className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
               title="From Date"
             />
           </div>
@@ -150,7 +143,7 @@ export default function AttendancePage() {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-[#141d33] border border-[#23314d] text-white focus:outline-none focus:border-indigo-500"
+              className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
               title="To Date"
             />
           </div>
@@ -161,7 +154,7 @@ export default function AttendancePage() {
       <div className="saas-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#141d33]/60 text-slate-400 uppercase font-semibold border-b border-[#1e293b]">
+            <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] font-semibold tracking-wider border-b border-slate-200">
               <tr>
                 <th className="px-6 py-3.5">Employee</th>
                 <th className="px-6 py-3.5">Code</th>
@@ -173,27 +166,27 @@ export default function AttendancePage() {
                 <th className="px-6 py-3.5 text-right">Confidence</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1e293b]">
+            <tbody className="divide-y divide-slate-100">
               {records.length > 0 ? (
                 records.map((rec) => (
-                  <tr key={rec.id} className="hover:bg-[#131d33]/50 transition-colors">
-                    <td className="px-6 py-3.5 font-bold text-white">
+                  <tr key={rec.id} className="hover:bg-slate-50/70 transition-colors">
+                    <td className="px-6 py-3.5 font-semibold text-slate-900">
                       {rec.full_name}
                     </td>
 
-                    <td className="px-6 py-3.5 font-mono text-slate-300">
+                    <td className="px-6 py-3.5 font-mono text-slate-600">
                       {rec.employee_code}
                     </td>
 
-                    <td className="px-6 py-3.5 text-slate-400">
+                    <td className="px-6 py-3.5 text-slate-600">
                       {rec.department}
                     </td>
 
-                    <td className="px-6 py-3.5 text-slate-300 font-mono">
+                    <td className="px-6 py-3.5 text-slate-600 font-mono">
                       {rec.date}
                     </td>
 
-                    <td className="px-6 py-3.5 font-mono font-bold text-white">
+                    <td className="px-6 py-3.5 font-mono font-semibold text-slate-900">
                       {rec.check_in_time || "—"}
                     </td>
 
@@ -205,14 +198,14 @@ export default function AttendancePage() {
                       <StatusBadge status={rec.status} size="sm" />
                     </td>
 
-                    <td className="px-6 py-3.5 text-right font-mono font-bold text-indigo-400">
+                    <td className="px-6 py-3.5 text-right font-mono font-semibold text-indigo-700">
                       {rec.confidence_score ? `${(rec.confidence_score * 100).toFixed(1)}%` : "100%"}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-slate-500">
+                  <td colSpan={8} className="px-6 py-12 text-center text-slate-400">
                     {loading ? "Loading attendance logs..." : "No attendance logs match the selected filters."}
                   </td>
                 </tr>
